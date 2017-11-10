@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Menu
+{% endblock title %}
+
+{% block head %}
+{% endblock head %}
+
+{% block content %}
+<div align="center">
+    <ul >
+            <li><a class="button" href="/consulta/{{periodoId}}">Consultar Transacciones</a></li>
+            <li><a class="button" href="/transaccion/{{periodoId}}">Ingresar Transaccion</a></li>
+            <li><a class="button" href="/generador/{{periodoId}}">Generar Estados Financieros</a></li>
+            <li><a class="button" href="/historial/{{periodoId}}">Historial de Cuentas</a></li>
+    </ul> 
+</div>
+{% endblock content %}
