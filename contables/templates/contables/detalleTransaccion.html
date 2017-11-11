@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}
+Listado Periodo Contable
+{% endblock title %}
+
+{% block head %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/Padding.css' %}">
+<script type="text/javascript"> 
+    $(document).ready(function() {
+        $('#enviar').click(function(e){
+            e.preventDefault();
+                var dataString1 = $('#form-control1').serialize();
+                var dataString2 = $('#form-control2').serialize();
+                var dataString = dataString1+'&'+dataString2;
+            alert('Datos serializados: '+dataString);
+
+            $.ajax({
+                type: "POST",
+                url: '',
+                data: dataString,
+                success: function(data) {
+                window.location.replace("");
+                }
+            });
+        });
+    });
+</script>
+
+
+{% endblock head %}
+
+{% block content%}
+<div id="div1">
+	<div id="div1">
+		<h1 align="center">Cuentas Debe</h1>
+			<form id="form-control1" method="POST">
+			{%csrf_token%}
+				Cuenta:<select style="width:500px" name="cuentaId1"> 
+					{% for cuentas in cuenta %}
+					<option value="{{cuentas.id}}">{{cuentas.codigo}}    {{cuentas.nombre}}</option>
+					{% endfor %}
+				</select>
+				<br>
+				<br>
+				<br>
+				<br>
+				Debe:<input type="number" name="monto1" step="0.1">
+				<input type="hidden" name="idtrans1" value="{{transaccionId}}">
+			</form>
+	</div>
+
+	<div id="div1" style="margin-left: 200px">
+		<h1 align="center">Cuentas Haber</h1>
+			<form id="form-control2" method="POST">	
+			{% csrf_token %}
+				Cuenta:<select style="width:500px" name="cuentaId2">
+					{% for cuentas in cuenta %}
+	 				<option value="{{cuentas.id}}">{{cuentas.codigo}}     {{cuentas.nombre}}</option>
+					{% endfor %}
+					</select>
+					<br>
+					<br>
+					<br>
+					<br>
+					Haber:<input type="number" name="monto2" step="0.1" style="margin-left: 8px">
+					<input type="hidden" name="idtrans2" value="{{transaccionId}}">
+			
+			</form>
+	</div>
+</div>
+<div align="center" style=" margin-top: 200px" id="div1">
+	<div style="margin-left: 650px">
+	<input type="submit" name="enviar" id="enviar" value="Enviar">
+	<a href="/transaccion/{{periodoId}}"><input type="button" name="salir" value="Regresar"></a>
+	</div>
+</div>
+
+
+{% endblock content %}

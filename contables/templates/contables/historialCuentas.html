@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}
+Listado Periodo Contable
+{% endblock title %}
+
+{% block content %}
+
+<div align="center">
+	<table>
+		<tr>
+			<td>Codigo</td>
+			<td>Cuenta</td>
+			<td>Debe Total</td>
+			<td>Haber Total</td>
+		</tr>
+			{% for cuentas in cuenta%}
+		<tr>
+			<td>{{cuentas.codigo}}</td>
+			<td>{{cuentas.nombre}}</td>
+			<td>{{cuentas.debe}}</td>
+			<td>{{cuentas.haber}}</td>			
+			{%endfor%}
+		</tr>
+	</table>
+</div>
+
+{% endblock content %}

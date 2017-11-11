@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}
+Listado Periodo Contable
+{% endblock title %}
+
+{% block content %}
+
+<div align="center">
+<table>
+<tr>
+	<td><a href="/menu/{{periodoId}}">Regresar</a></td>
+</tr>
+</table>
+	<table>	
+	
+	<tr>
+		<td>Transaccion</td>
+		<td>Fecha</td>
+		<td>Ver</td>
+	</tr>
+	{% for trans in transacciones%}
+	<tr>
+		<td>{{trans.descripcion}}</td>
+		<td>{{trans.fecha}}</td>
+		<td><a href="/detalleAfectado/{{periodoId}}/{{trans.id_Transaccion}}">Ver Detalles</a></td>
+	</tr>
+	{% endfor %}
+	</table>
+</div>
+{% endblock content %}

@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Listado Periodo Contable
+{% endblock title %}
+
+{% block content %}
+<div align="center">
+<table>
+<a class="button" href="nuevoPeriodo/">Agregar Periodo Contable</a>
+<tr>
+	<td>Fecha Inicio</td>
+	<td>Fecha Fin</td>
+	<td>Ver</td>
+	<td>Estado</td>
+
+</tr>
+{% for periodo in periodoCont %}
+<tr>
+	<td>{{periodo.fechaInicio}}</td>
+	<td>{{periodo.fechaFin}}</td>
+	<td><a href="/menu/{{periodo.id_periodoContable}}">Ir</a></td>
+	{%if periodo.estadoPeriodo == True%}
+	<td>Activo</td>
+	{% endif %}
+	{%if periodo.estadoPeriodo == False%}
+	<td>Cerrado</td>
+	{% endif %}
+</tr>
+{% endfor %}
+</table>
+<div>
+{% endblock content %}
