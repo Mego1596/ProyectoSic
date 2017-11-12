@@ -34,7 +34,7 @@ class Cuenta(models.Model):
 		return self.haber
 
 	def getDebe(self):
-		return self.haber
+		return self.debe
 
 
 

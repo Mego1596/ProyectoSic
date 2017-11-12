@@ -77,10 +77,10 @@ def detallesTransaccion(request,periodoId,transaccionId):
 						id_Transaccion =Transaccion.objects.get(id_Transaccion=request.POST['idtrans'+str(x+1)]) ,
 						id_cuenta =Cuenta.objects.get(id=request.POST['cuentaId'+str(x+1)]),
 						)
-					cuentaActualizar = Cuenta.objects.get(id=request.POST['cuentaId'+str(x+1)])	
-					haberac = cuentaActualizar.getHaber()
-					cuentaActualizar.haber=float(haberac)+float(request.POST['monto'+str(x+1)])					
-					cuentaActualizar.save()
+					cuentaActualizar2 = Cuenta.objects.get(id=request.POST['cuentaId'+str(x+1)])	
+					haberac = cuentaActualizar2.getHaber()
+					cuentaActualizar2.haber=float(haberac)+float(request.POST['monto'+str(x+1)])					
+					cuentaActualizar2.save()
 	return render(request, 'contables/detalleTransaccion.html',{'periodoId':periodo,'transaccionId':trans,'cuenta':cuentas})
 
 
