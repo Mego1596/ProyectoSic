@@ -22,10 +22,13 @@ class Transaccion(models.Model):
 
 		
 class Cuenta(models.Model):
+	id = models.AutoField(primary_key=True)
 	codigo = models.IntegerField()
 	nombre = models.CharField(max_length = 256)
-	debe = models.DecimalField('debe', max_digits=5, decimal_places=2, blank=False, null=False, validators=[MinValueValidator(0)])
-	haber = models.DecimalField('haber', max_digits=5, decimal_places=2, blank=False, null=False, validators=[MinValueValidator(0)])
+	debe = models.DecimalField('debe', max_digits=50, decimal_places=2, blank=False, null=False, validators=[MinValueValidator(0)])
+	haber = models.DecimalField('haber', max_digits=50, decimal_places=2, blank=False, null=False, validators=[MinValueValidator(0)])
+	saldoDeudor = models.DecimalField('saldo_deudor', max_digits =50, decimal_places=2,blank=False,null=False,validators=[MinValueValidator(0)],default=0.00)
+	saldoAcreedor = models.DecimalField('saldo_acreedor', max_digits =50, decimal_places=2,blank=False,null=False,validators=[MinValueValidator(0)],default=0.00)
 	codigo_dependiente = models.IntegerField(null= True)
 	def __str__(self):
 		return '{}{}'.format(self.nombre)
@@ -36,6 +39,11 @@ class Cuenta(models.Model):
 	def getDebe(self):
 		return self.debe
 
+	def getSaldoAcreedor(self):
+		return self.saldoAcreedor
+
+	def getSaldoDeudor(self):
+		return self.saldoDeudor
 
 
 class detalleTransaccion(models.Model):

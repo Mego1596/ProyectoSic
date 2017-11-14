@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Listado Periodo Contable
+{% endblock title %}
+
+{% block content %}
+<div align="center">
+    <ul >
+            <li><a class="button" href="/balanceComprobacion/{{periodoId}}">Balance de Comprobacion</a></li>
+            <li><a class="button" href="">Estado de Resultados</a></li>
+            <li><a class="button" href="">Estado de Capital</a></li>
+            <li><a class="button" href="">Balance General</a></li>
+
+    </ul> 
+</div>
+{% endblock content %}

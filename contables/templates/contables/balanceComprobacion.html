@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Listado Periodo Contable
+{% endblock title %}
+{% block head%}
+<script type="text/javascript"> 
+    $(document).ready(function() {
+        $('#enviar').click(function(e){
+            e.preventDefault();
+                var dataString = $('#form-control').serialize();
+
+            
+
+            $.ajax({
+                type: "POST",
+                url: '',
+                data: dataString,
+                success: function(data) {
+                window.location.replace("");
+                }
+            });
+        });
+    });
+</script>
+{% endblock head%}
+{% block content %}
+<div align="center">
+	<form id="form-control">
+	{%csrf_token%}
+	<input type="submit" name="enviar" id="enviar" value="Cargar Balance de Comprobacion">
+	</form>
+	<table>
+	<tr>
+		<td>Cuenta</td>
+		<td>Deudor</td>
+		<td>Acreedor</td>
+	</tr>
+	<tr>
+		{% for cuentas in cuenta %}
+		<td>{{cuentas.nombre}}</td>
+		<td>{{cuentas.saldoDeudor}}</td>
+		<td>{{cuentas.saldoAcreedor}}</td>
+	</tr>
+		{% endfor %}
+	</table>
+
+
+</div>
+{% endblock content %}

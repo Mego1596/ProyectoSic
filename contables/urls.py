@@ -15,4 +15,5 @@ urlpatterns = [
     url(r'^detalleAfectado/(?P<periodoId>\d+)/(?P<transaccionId>\d+)/$',views.consultaAfectado),
     url(r'^generador/(?P<periodoId>\d+)/$', views.generadorEstados),
     url(r'^historial/(?P<periodoId>\d+)/$', views.historialCuenta),
+    url(r'^balanceComprobacion/(?P<periodoId>\d+)/$', views.balancesComprobacion),
 ]
