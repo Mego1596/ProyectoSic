@@ -30,6 +30,7 @@ class Cuenta(models.Model):
 	saldoDeudor = models.DecimalField('saldo_deudor', max_digits =50, decimal_places=2,blank=False,null=False,validators=[MinValueValidator(0)],default=0.00)
 	saldoAcreedor = models.DecimalField('saldo_acreedor', max_digits =50, decimal_places=2,blank=False,null=False,validators=[MinValueValidator(0)],default=0.00)
 	codigo_dependiente = models.IntegerField(null= True)
+	descripcion = models.CharField(max_length= 256, null=False, blank=False, default='null')
 	def __str__(self):
 		return '{}{}'.format(self.nombre)
 

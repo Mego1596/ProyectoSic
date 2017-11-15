@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Listado Periodo Contable
+{% endblock title %}
+
+{% block head %}
+<script type="text/javascript"> 
+    $(document).ready(function() {
+        $('#enviar').click(function(e){
+            e.preventDefault();
+                var dataString = $('#form-control').serialize();
+
+            alert('Datos serializados: '+dataString);
+
+            $.ajax({
+                type: "POST",
+                url: '',
+                data: dataString,
+                success: function(data) {
+                window.location.replace("");
+                }
+            });
+        });
+    });
+</script>
+{% endblock head %}
+
+{% block content %}
+<div align="center">
+	<form id="form-control">
+	{% csrf_token%}
+		<table>
+		{% for cuenta in cuentas%}
+			<tr>
+				<tc>
+					<td>Codigo de Cuenta:</td>
+				</tc>
+				<tc>
+					<td><input type="number" name="codigoCuenta" placeholder="{{cuenta.codigo}}+0#"></td>
+				</tc>
+			</tr>
+		{% endfor %}
+			<tr>
+				<tc>
+					<td>Nombre de Cuenta:</td>
+				</tc>
+				<tc>
+					<td><input type="text" name="nombreCuenta"></td>
+				</tc>
+			</tr>
+			<tr>
+				<tc>
+					<td>Descripcion de Cuenta:</td>
+				</tc>
+				<tc>
+					<td><input type="text" name="descripcionCuenta"></td>
+				</tc>
+			</tr>
+			<tr>
+				<tc>
+					<td>Cuenta Padre:</td>
+				</tc>
+				<tc>
+					<td><input type="number" name="descripcionCuenta" value="{{cuentaId}}" readonly="readonly"></td>
+				</tc>
+			</tr>
+		</table>
+		<input type="submit" name="enviar" id="enviar" value="Guardar">
+		<a href="/catalogo/"><input type="button" value="Regresar"></a>
+	</form>
+
+</div>
+{% endblock content %}

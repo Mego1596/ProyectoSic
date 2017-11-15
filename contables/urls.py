@@ -4,7 +4,7 @@ from . import views
 
 urlpatterns = [
     url(r'^index/$', views.index),
-     url(r'^periodoConta/$', views.periodoConta),
+    url(r'^periodoConta/$', views.periodoConta),
     url(r'^periodoConta/nuevoPeriodo/$',views.nuevoPeriodo),
     url(r'^catalogo/$',views.catalogoCuenta),
     url(r'^menu/(?P<periodoId>\d+)/$', views.manejoTransaccion),
@@ -16,4 +16,6 @@ urlpatterns = [
     url(r'^generador/(?P<periodoId>\d+)/$', views.generadorEstados),
     url(r'^historial/(?P<periodoId>\d+)/$', views.historialCuenta),
     url(r'^balanceComprobacion/(?P<periodoId>\d+)/$', views.balancesComprobacion),
+    url(r'^agregarCuenta/$', views.agregarCuentaPadre),
+    url(r'^agregarCuentaHija/(?P<cuentaId>\d+)/$', views.agregarCuentaHija)
 ]

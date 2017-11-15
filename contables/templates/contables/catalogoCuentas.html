@@ -5,5 +5,52 @@ Listado Periodo Contable
 {% endblock title %}
 
 {% block content %}
+<div align="center">
+<p><h1>Catalogo de Cuentas</h1></p>
+<a href="/agregarCuenta/">Agregar Cuenta Padre</a>
+<a href="">Modificar Cuenta</a>
+	<table>
+		<tr>
+			<td>Identificador</td>
+			<td>Codigo</td>
+			<td>Cuenta</td>
+			<td>Descripcion</td>
+			<td>Hija</td>
+			<td>Agregar Cuenta Hija</td>
+		</tr>
+		<tr>
+			{% for cuenta1 in cuenta%}
+			{% if cuenta1.codigo_dependiente == null %}
+			<td><h3>{{cuenta1.id}}</h3></td>
+			<td><h3>{{cuenta1.codigo}}</h3></td>
+			<td><h3>{{cuenta1.nombre}}</h3></td>
+			<td><h3>{{cuenta1.descripcion}}</h3></td>
 
+			{% if cuenta1.codigo_dependiente != null %}
+			<td><h3>{{cuenta1.codigo_dependiente}}</h3></td>
+			{% endif %}
+			{% if cuenta1.codigo_dependiente == null%}
+			<td><h3>Padre</h3></td>
+			<td><h3><a href="/agregarCuentaHija/{{cuenta1.id}}">Asignar Cuentas hijas</a></h3></td>
+			{% endif %}
+		</tr>
+			{% endif %}
+			{% for cuenta2 in cuenta%}
+			<tr>
+			{% if cuenta1.id == cuenta2.codigo_dependiente %}
+			<td>{{cuenta2.id}}</td>
+			<td>{{cuenta2.codigo}}</td>
+			<td>{{cuenta2.nombre}}</td>
+			<td>{{cuenta2.descripcion}}</td>
+
+			{% if cuenta2.codigo_dependiente != null %}
+			<td>{{cuenta2.codigo_dependiente}}</td>
+			{% endif %}
+			</tr>
+			{% endif  %}
+			{% endfor %}
+			{% endfor %}
+		</tr>
+	</table>
+</div>
 {% endblock content %}

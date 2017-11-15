@@ -122,14 +122,14 @@ def balancesComprobacion(request,periodoId):
 				cuentaParcial.saldoAcreedor=0.00
 			haberParcial=0.00
 			debeParcial=0.00
-			
-		for cuenta in cuentas:
-			sumaHaber = float(sumaHaber)+float(cuenta.getSaldoAcreedor())
-			sumaDebe = float(sumaDebe)+float(cuenta.getSaldoDeudor())
-		balance = estadoComprobacion.objects.get(id=1)
-		balance.debe=float(sumaDebe)
-		balance.haber=float(sumaHaber)
-		balance.save()
+
+			sumaHaber = float(sumaHaber)+ float(cuenta.getSaldoAcreedor())
+			sumaDebe =  float(sumaDebe)  + float(cuenta.getSaldoDeudor())
+			print(sumaHaber)
+			balance = estadoComprobacion.objects.get(id=1)
+			balance.debe=float(sumaDebe)
+			balance.haber=float(sumaHaber)
+			balance.save()
 	return render(request,'contables/balanceComprobacion.html',{'cuenta':cuentas,'estado':balances})
 
 def historialCuenta(request,periodoId):
@@ -137,4 +137,34 @@ def historialCuenta(request,periodoId):
 	return render(request,'contables/historialCuentas.html',{'cuenta':cuentas})
 
 def catalogoCuenta(request):
-	return render(request, 'contables/catalogoCuentas.html')
+	cuentas = Cuenta.objects.all()
+	return render(request, 'contables/catalogoCuentas.html',{'cuenta':cuentas})
+
+def agregarCuentaPadre(request):
+	if request.method == 'POST':
+		Cuenta.objects.create(
+			codigo =request.POST['codigoCuenta'],
+			nombre =request.POST['nombreCuenta'],
+			debe =0.00,
+			haber=0.00,
+			saldoDeudor=0.00,
+			saldoAcreedor=0.00,
+			descripcion=request.POST['descripcionCuenta']
+			)
+	return render(request, 'contables/agregarCuenta.html')
+
+def agregarCuentaHija(request,cuentaId):
+	cuenta=Cuenta.objects.filter(id=cuentaId)
+	cuentaid=cuentaId
+	if request.method == 'POST':
+		Cuenta.objects.create(
+			codigo =request.POST['codigoCuenta'],
+			nombre =request.POST['nombreCuenta'],
+			debe =0.00,
+			haber=0.00,
+			saldoDeudor=0.00,
+			saldoAcreedor=0.00,
+			codigo_dependiente=cuentaId,
+			descripcion=request.POST['descripcionCuenta']
+			)
+	return render(request, 'contables/agregarCuentaHija.html',{'cuentas':cuenta,'cuentaId':cuentaid})

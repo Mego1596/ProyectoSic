@@ -3,6 +3,7 @@
 {% block title %}
 Listado Periodo Contable
 {% endblock title %}
+
 {% block head %}
 <script type="text/javascript"> 
     $(document).ready(function() {
@@ -17,41 +18,47 @@ Listado Periodo Contable
                 url: '',
                 data: dataString,
                 success: function(data) {
-                window.location.replace("/transaccion/{{periodoId}}");
+                window.location.replace("");
                 }
             });
         });
     });
 </script>
 {% endblock head %}
-{% block content%}
 
-<form id="form-control">
-	{% csrf_token %}
-	<div align="center">
+{% block content %}
+<div align="center">
+	<form id="form-control">
+	{% csrf_token%}
 		<table>
 			<tr>
 				<tc>
-					<td>Descripcion:</td>
+					<td>Codigo de Cuenta:</td>
 				</tc>
 				<tc>
-					<td><input type="text" name="descripcion"></td>
+					<td><input type="number" name="codigoCuenta"></td>
 				</tc>
 			</tr>
 			<tr>
 				<tc>
-					<td>Fecha</td>
+					<td>Nombre de Cuenta:</td>
 				</tc>
 				<tc>
-					<td><input type="date" name="fechaTransaccion"></td>
+					<td><input type="text" name="nombreCuenta"></td>
 				</tc>
 			</tr>
-				
-			
+			<tr>
+				<tc>
+					<td>Descripcion de Cuenta:</td>
+				</tc>
+				<tc>
+					<td><input type="text" name="descripcionCuenta"></td>
+				</tc>
+			</tr>
 		</table>
-		<input type="submit" value="Enviar" id="enviar" name="enviar">
-		<a href="/transaccion/{{periodoId}}"><input type="button" value="Regresar"></a>
-	</div>
-	<input type="hidden" value="{{periodoId}}" name="periodo" readonly="readonly"></td>
-</form>
-{% endblock content%}
+		<input type="submit" name="enviar" id="enviar" value="Guardar">
+		<a href="/catalogo/"><input type="button" value="Regresar"></a>
+	</form>
+
+</div>
+{% endblock content %}
