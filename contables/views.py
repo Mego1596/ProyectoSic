@@ -8,7 +8,13 @@ def index(request):
 	return render(request, 'contables/index.html')
 def periodoConta(request):
 	periodo = PeriodoContable.objects.all()
-	return render(request, 'contables/periodoContable.html',{'periodoCont':periodo})
+	cantidad= int(0)
+	print(cantidad)
+	for periodos in periodo:
+		if periodos.estadoPeriodo == True:
+			cantidad= int(cantidad)+1
+			print(cantidad)
+	return render(request, 'contables/periodoContable.html',{'periodoCont':periodo,'cant':cantidad})
 
 def nuevoPeriodo(request):
 		if request.method == 'POST':

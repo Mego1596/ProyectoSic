@@ -9,7 +9,9 @@ Listado Periodo Contable
 <table>
 
 <tr>
+	{% if cant == 0%}
 	<td align="center"><a href="nuevoPeriodo/">Agregar Periodo Contable</a></td>
+	{% endif %}
 	<td align="center"><a href="/index/">Regresar</a></td>
 <tr>
 	<td align="center">Fecha Inicio</td>
