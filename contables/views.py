@@ -122,12 +122,13 @@ def balancesComprobacion(request,periodoId):
 				cuentaParcial.saldoAcreedor=0.00
 			haberParcial=0.00
 			debeParcial=0.00
+			
 		for cuenta in cuentas:
 			sumaHaber = float(sumaHaber)+float(cuenta.getSaldoAcreedor())
 			sumaDebe = float(sumaDebe)+float(cuenta.getSaldoDeudor())
 		balance = estadoComprobacion.objects.get(id=1)
-		balance.debe=sumaDebe
-		balance.haber=sumaHaber
+		balance.debe=float(sumaDebe)
+		balance.haber=float(sumaHaber)
 		balance.save()
 	return render(request,'contables/balanceComprobacion.html',{'cuenta':cuentas,'estado':balances})
 
