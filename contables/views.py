@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 from django.http import HttpResponse
 from django.shortcuts import render,redirect
-from .models import PeriodoContable,Transaccion,Cuenta,detalleTransaccion
+from .models import PeriodoContable,Transaccion,Cuenta,detalleTransaccion,estadoComprobacion
 # Create your views here.
 def index(request):
 	return render(request, 'contables/index.html')
@@ -90,10 +90,13 @@ def generadorEstados(request,periodoId):
 
 def balancesComprobacion(request,periodoId):
 	detalles = detalleTransaccion.objects.all()
+	balances=estadoComprobacion.objects.all()
 	transaccion = Transaccion.objects.filter(id_periodoContable=periodoId)
 	cuentas=Cuenta.objects.all()
 	haberParcial = float(0.00)
 	debeParcial = float(0.00)
+	sumaHaber=float(0.00)
+	sumaDebe=float(0.00)
 	if request.method == 'POST':
 		for cuenta in cuentas:
 			cuentaSet=Cuenta.objects.get(id=cuenta.id)
@@ -108,8 +111,6 @@ def balancesComprobacion(request,periodoId):
 						if detalle.id_Transaccion_id==transacciones.id_Transaccion:
 							haberParcial=float(haberParcial)+float(detalle.haber)
 							debeParcial=float(debeParcial)+float(detalle.debe)
-			print(haberParcial)
-			print(debeParcial)
 			if haberParcial>debeParcial:
 				cuentaParcial.saldoAcreedor=float(haberParcial)-float(debeParcial)
 				cuentaParcial.save()
@@ -121,7 +122,14 @@ def balancesComprobacion(request,periodoId):
 				cuentaParcial.saldoAcreedor=0.00
 			haberParcial=0.00
 			debeParcial=0.00
-	return render(request,'contables/balanceComprobacion.html',{'cuenta':cuentas})
+		for cuenta in cuentas:
+			sumaHaber = float(sumaHaber)+float(cuenta.getSaldoAcreedor())
+			sumaDebe = float(sumaDebe)+float(cuenta.getSaldoDeudor())
+		balance = estadoComprobacion.objects.get(id=1)
+		balance.debe=sumaDebe
+		balance.haber=sumaHaber
+		balance.save()
+	return render(request,'contables/balanceComprobacion.html',{'cuenta':cuentas,'estado':balances})
 
 def historialCuenta(request,periodoId):
 	cuentas = Cuenta.objects.all()

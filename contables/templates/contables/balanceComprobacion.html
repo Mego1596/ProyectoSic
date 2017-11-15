@@ -43,6 +43,13 @@ Listado Periodo Contable
 		<td>{{cuentas.saldoAcreedor}}</td>
 	</tr>
 		{% endfor %}
+	<tr>
+		{% for bal in estado%}
+		<td>Total</td>
+		<td><b>{{bal.debe}}</b></td>
+		<td><b>{{bal.haber}}</b></td>
+	</tr>
+		{% endfor %}
 	</table>
 
 

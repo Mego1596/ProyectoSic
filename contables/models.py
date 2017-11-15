@@ -45,15 +45,16 @@ class Cuenta(models.Model):
 	def getSaldoDeudor(self):
 		return self.saldoDeudor
 
-
 class detalleTransaccion(models.Model):
 	id_detalle = models.AutoField(primary_key = True)
-	debe = models.DecimalField('debe', max_digits=5, decimal_places=2, blank=False, null=True, validators=[MinValueValidator(0)])
-	haber = models.DecimalField('haber', max_digits=5, decimal_places=2, blank=False, null=True, validators=[MinValueValidator(0)])  
+	debe = models.DecimalField('debe', max_digits=50, decimal_places=2, blank=False, null=True, validators=[MinValueValidator(0)])
+	haber = models.DecimalField('haber', max_digits=50, decimal_places=2, blank=False, null=True, validators=[MinValueValidator(0)])  
 	id_Transaccion = models.ForeignKey(Transaccion, null=True, blank=True,on_delete= models.CASCADE)
 	id_cuenta = models.ForeignKey(Cuenta, null=True, blank=True, on_delete=models.CASCADE)
 	def __str__(self):
 		return '{}{}'.format(self.id_detalle)
 
-
-
+class estadoComprobacion(models.Model):
+	id= models.AutoField(primary_key=True)
+	debe =models.DecimalField('debe', max_digits=50, decimal_places=2, blank=False, null=True, validators=[MinValueValidator(0)])
+	haber= models.DecimalField('haber', max_digits=50, decimal_places=2, blank=False, null=True, validators=[MinValueValidator(0)])
