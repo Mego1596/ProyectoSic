@@ -7,24 +7,27 @@ Listado Periodo Contable
 {% block content %}
 <div align="center">
 <table>
-<a class="button" href="nuevoPeriodo/">Agregar Periodo Contable</a>
+
 <tr>
-	<td>Fecha Inicio</td>
-	<td>Fecha Fin</td>
-	<td>Ver</td>
-	<td>Estado</td>
+	<td align="center"><a href="nuevoPeriodo/">Agregar Periodo Contable</a></td>
+	<td align="center"><a href="/index/">Regresar</a></td>
+<tr>
+	<td align="center">Fecha Inicio</td>
+	<td align="center">Fecha Fin</td>
+	<td align="center">Ver</td>
+	<td align="center">Estado</td>
 
 </tr>
 {% for periodo in periodoCont %}
 <tr>
-	<td>{{periodo.fechaInicio}}</td>
-	<td>{{periodo.fechaFin}}</td>
-	<td><a href="/menu/{{periodo.id_periodoContable}}">Ir</a></td>
+	<td align="center">{{periodo.fechaInicio}}</td>
+	<td align="center">{{periodo.fechaFin}}</td>
+	<td align="center"><a href="/menu/{{periodo.id_periodoContable}}">Ir</a></td>
 	{%if periodo.estadoPeriodo == True%}
-	<td>Activo</td>
+	<td align="center">Activo</td>
 	{% endif %}
 	{%if periodo.estadoPeriodo == False%}
-	<td>Cerrado</td>
+	<td align="center">Cerrado</td>
 	{% endif %}
 </tr>
 {% endfor %}

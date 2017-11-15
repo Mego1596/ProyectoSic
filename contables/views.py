@@ -168,3 +168,31 @@ def agregarCuentaHija(request,cuentaId):
 			descripcion=request.POST['descripcionCuenta']
 			)
 	return render(request, 'contables/agregarCuentaHija.html',{'cuentas':cuenta,'cuentaId':cuentaid})
+
+def modificarCuenta(request,cuentaId):
+	cuentaid=cuentaId
+	cuentas = Cuenta.objects.filter(id=cuentaId)
+
+	if request.method == 'POST':
+		periodo=PeriodoContable.objects.all()
+		for  periodos in periodo:
+			if periodos.estadoPeriodo == True:
+				transaccion=Transaccion.objects.filter(id_periodoContable=periodos.id_periodoContable	)
+				tamano = len(transaccion)
+				if tamano == 0:
+					cuentaParcial = Cuenta.objects.get(id=request.POST['idCuenta'])
+					cuentaParcial.codigo= request.POST['codigoCuenta']
+					cuentaParcial.nombre= request.POST['nombreCuenta']
+					cuentaParcial.descripcion= request.POST['descripcionCuenta']
+					cuentaParcial.debe= request.POST['debeCuenta']
+					cuentaParcial.haber= request.POST['haberCuenta']
+					cuentaParcial.save()
+				else:
+					print('ya hay transacciones solo puede modificar el nombre y descripcion')
+					cuentaParcial = Cuenta.objects.get(id=request.POST['idCuenta'])
+					cuentaParcial.codigo= request.POST['codigoCuenta']
+					cuentaParcial.nombre= request.POST['nombreCuenta']
+					cuentaParcial.descripcion= request.POST['descripcionCuenta']
+					cuentaParcial.save()
+
+	return render (request, 'contables/modificarCuenta.html',{'cuenta':cuentas})

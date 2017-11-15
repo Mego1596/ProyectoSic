@@ -18,7 +18,7 @@ Listado Periodo Contable
                 url: '',
                 data: dataString,
                 success: function(data) {
-                window.location.replace("");
+                window.location.replace("/catalogo/");
                 }
             });
         });
@@ -26,46 +26,60 @@ Listado Periodo Contable
 </script>
 {% endblock head %}
 
+
 {% block content %}
 <div align="center">
 	<form id="form-control">
 	{% csrf_token%}
 		<table>
-		{% for cuenta in cuentas%}
+		{% for cuentaHija in cuenta%}
+			<tr>
+				<tc>
+					<td><input type="hidden" name="idCuenta" value="{{cuentaHija.id}}" readonly="readonly">
+				</tc>
+			</tr>
 			<tr>
 				<tc>
 					<td>Codigo de Cuenta:</td>
 				</tc>
 				<tc>
-					<td><input type="number" name="codigoCuenta" placeholder="{{cuenta.codigo}}+0#"></td>
+					<td><input type="number" name="codigoCuenta" value="{{cuentaHija.codigo}}" readonly="readonly"></td>
 				</tc>
 			</tr>
-		{% endfor %}
 			<tr>
 				<tc>
 					<td>Nombre de Cuenta:</td>
 				</tc>
 				<tc>
-					<td><input type="text" name="nombreCuenta"></td>
+					<td><input type="text" name="nombreCuenta" value="{{cuentaHija.nombre}}"></td>
 				</tc>
 			</tr>
 			<tr>
 				<tc>
-					<td>Descripcion:</td>
+					<td>Descripcion de Cuenta:</td>
 				</tc>
 				<tc>
-					<td><input type="text" name="descripcionCuenta"></td>
+					<td><input type="text" name="descripcionCuenta" value="{{cuentaHija.descripcion}}"></td>
 				</tc>
 			</tr>
 			<tr>
 				<tc>
-					<td>Cuenta Padre:</td>
+					<td>Saldo Debe:</td>
 				</tc>
 				<tc>
-					<td><input type="number" name="idCuenta" value="{{cuentaId}}" readonly="readonly"></td>
+					<td><input type="number" name="debeCuenta" step="0.1"></td>
+				</tc>
+			</tr>
+			<tr>
+				<tc>
+					<td>Saldo Haber:</td>
+				</tc>
+				<tc>
+					<td><input type="number" name="haberCuenta" step="0.1"></td>
 				</tc>
 			</tr>
 		</table>
+		{% endfor %}
 		<input type="submit" name="enviar" id="enviar" value="Guardar">
 		<a href="/catalogo/"><input type="button" value="Regresar"></a>
 	</form>

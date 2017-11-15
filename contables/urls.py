@@ -17,5 +17,6 @@ urlpatterns = [
     url(r'^historial/(?P<periodoId>\d+)/$', views.historialCuenta),
     url(r'^balanceComprobacion/(?P<periodoId>\d+)/$', views.balancesComprobacion),
     url(r'^agregarCuenta/$', views.agregarCuentaPadre),
-    url(r'^agregarCuentaHija/(?P<cuentaId>\d+)/$', views.agregarCuentaHija)
+    url(r'^agregarCuentaHija/(?P<cuentaId>\d+)/$', views.agregarCuentaHija),
+    url(r'^modificarCuenta/(?P<cuentaId>\d+)/$', views.modificarCuenta),
 ]

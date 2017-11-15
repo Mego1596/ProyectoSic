@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+ align="center"{% extends 'base.html' %}
 
 {% block title %}
 Listado Periodo Contable
@@ -8,42 +8,44 @@ Listado Periodo Contable
 <div align="center">
 <p><h1>Catalogo de Cuentas</h1></p>
 <a href="/agregarCuenta/">Agregar Cuenta Padre</a>
+<a href="/index/">Regresar</a>
 	<table>
 		<tr>
-			<td>Identificador</td>
-			<td>Codigo</td>
-			<td>Cuenta</td>
-			<td>Descripcion</td>
-			<td>Hija</td>
-			<td>Agregar Cuenta Hija</td>
+			<td align="center">Identificador</td>
+			<td align="center">Codigo</td>
+			<td align="center">Cuenta</td>
+			<td align="center">Descripcion</td>
+			<td align="center">Hija</td>
+			<td align="center">Gestionar Cuenta</td>
 		</tr>
 		<tr>
 			{% for cuenta1 in cuenta%}
 			{% if cuenta1.codigo_dependiente == null %}
-			<td><h3>{{cuenta1.id}}</h3></td>
-			<td><h3>{{cuenta1.codigo}}</h3></td>
-			<td><h3>{{cuenta1.nombre}}</h3></td>
-			<td><h3>{{cuenta1.descripcion}}</h3></td>
+			<td align="center"><h3>{{cuenta1.id}}</h3></td>
+			<td align="center"><h3>{{cuenta1.codigo}}</h3></td>
+			<td align="center"><h3>{{cuenta1.nombre}}</h3></td>
+			<td align="center"><h3>{{cuenta1.descripcion}}</h3></td>
 
 			{% if cuenta1.codigo_dependiente != null %}
-			<td><h3>{{cuenta1.codigo_dependiente}}</h3></td>
+			<td align="center"><h3>{{cuenta1.codigo_dependiente}}</h3></td>
 			{% endif %}
 			{% if cuenta1.codigo_dependiente == null%}
-			<td><h3>Padre</h3></td>
-			<td><h3><a href="/agregarCuentaHija/{{cuenta1.id}}">Asignar Cuentas hijas</a></h3></td>
+			<td align="center"><h3>Padre</h3></td>
+			<td align="center"><h3><a href="/agregarCuentaHija/{{cuenta1.id}}">Asignar Cuentas hijas</a></h3></td>
 			{% endif %}
 		</tr>
 			{% endif %}
 			{% for cuenta2 in cuenta%}
 			<tr>
 			{% if cuenta1.id == cuenta2.codigo_dependiente %}
-			<td>{{cuenta2.id}}</td>
-			<td>{{cuenta2.codigo}}</td>
-			<td>{{cuenta2.nombre}}</td>
-			<td>{{cuenta2.descripcion}}</td>
+			<td align="center">{{cuenta2.id}}</td>
+			<td align="center">{{cuenta2.codigo}}</td>
+			<td align="center">{{cuenta2.nombre}}</td>
+			<td align="center">{{cuenta2.descripcion}}</td>
 
 			{% if cuenta2.codigo_dependiente != null %}
-			<td>{{cuenta2.codigo_dependiente}}</td>
+			<td align="center">{{cuenta2.codigo_dependiente}}</td>
+			<td align="center"><a href="/modificarCuenta/{{cuenta2.id}}">Modificar Cuenta</a></td>
 			{% endif %}
 			</tr>
 			{% endif  %}
