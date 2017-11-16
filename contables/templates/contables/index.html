@@ -10,6 +10,9 @@ Listado Periodo Contable
             <li><a class="button" href="/periodoConta/">Periodos Contables</a></li>
             <li><a class="button" href="/catalogo/">Catalogo de Cuentas</a></li>
             <li><a class="button" href="">Contabilidad de Costos</a></li>
+            {% if user == True%}
+            <li><a href="/signup/"><input type="button" value="Registrar Usuario"></a></li>
+            {% endif %}
     </ul> 
 </div>
 {% endblock content %}

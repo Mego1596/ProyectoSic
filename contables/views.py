@@ -3,9 +3,16 @@ from __future__ import unicode_literals
 from django.http import HttpResponse
 from django.shortcuts import render,redirect
 from .models import PeriodoContable,Transaccion,Cuenta,detalleTransaccion,estadoComprobacion
+from myauth.models import  MyUser
+from django.contrib.auth import login
+from django.contrib.auth.decorators import login_required
 # Create your views here.
+@login_required
 def index(request):
-	return render(request, 'contables/index.html')
+	userId=request.user.is_admin
+	return render(request, 'contables/index.html', {'user':userId})
+
+@login_required
 def periodoConta(request):
 	periodo = PeriodoContable.objects.all()
 	cantidad= int(0)
@@ -16,6 +23,7 @@ def periodoConta(request):
 			print(cantidad)
 	return render(request, 'contables/periodoContable.html',{'periodoCont':periodo,'cant':cantidad})
 
+@login_required
 def nuevoPeriodo(request):
 		if request.method == 'POST':
 			PeriodoContable.objects.create(
@@ -26,20 +34,24 @@ def nuevoPeriodo(request):
 			return HttpResponse('No se almacenaron los datos')
 		return render(request, 'contables/nuevoPeriodo.html')
 
+@login_required
 def manejoTransaccion(request, periodoId):
 	periodo=periodoId
 	return render(request, 'contables/menu.html',{'periodoId':periodo})
 
+@login_required
 def consultarTransaccion(request,periodoId):
 	periodo=periodoId
 	transaccion=Transaccion.objects.filter(id_periodoContable=periodoId)
 	return render(request, 'contables/consultarTransaccion.html',{'periodoId':periodo,'transacciones':transaccion})
 
+@login_required
 def consultaAfectado(request,periodoId,transaccionId):
 	cuenta =Cuenta.objects.all()
 	detalles = detalleTransaccion.objects.filter(id_Transaccion=transaccionId)
 	return render (request, 'contables/detalleCuentaAfectada.html',{'detalle':detalles,'cuentas':cuenta})
 
+@login_required
 def nuevaTransaccion(request,periodoId):
 	periodo=periodoId
 	#el periodoId sirve para validar que si esta cerrado no se puede hacer una nueva transaccion
@@ -52,11 +64,13 @@ def nuevaTransaccion(request,periodoId):
 			return HttpResponse('No se almacenaron los datos')
 	return render(request,'contables/ingresarTransaccion.html',{'periodoId':periodo})
 
+@login_required
 def transacciones(request,periodoId):
 	periodo=periodoId
 	transaccion=Transaccion.objects.filter(id_periodoContable=periodoId)
 	return render(request, 'contables/transaccionLista.html',{'periodoId':periodo,'transacciones':transaccion})
 
+@login_required
 def detallesTransaccion(request,periodoId,transaccionId):
 	periodo=periodoId
 	trans=transaccionId
@@ -89,11 +103,12 @@ def detallesTransaccion(request,periodoId,transaccionId):
 					cuentaActualizar2.save()
 	return render(request, 'contables/detalleTransaccion.html',{'periodoId':periodo,'transaccionId':trans,'cuenta':cuentas})
 
-
+@login_required
 def generadorEstados(request,periodoId):
 	periodo= periodoId
 	return render(request,'contables/generadorEstados.html',{'periodoId':periodo})
 
+@login_required
 def balancesComprobacion(request,periodoId):
 	detalles = detalleTransaccion.objects.all()
 	balances=estadoComprobacion.objects.all()
@@ -138,14 +153,17 @@ def balancesComprobacion(request,periodoId):
 			balance.save()
 	return render(request,'contables/balanceComprobacion.html',{'cuenta':cuentas,'estado':balances})
 
+@login_required
 def historialCuenta(request,periodoId):
 	cuentas = Cuenta.objects.all()
 	return render(request,'contables/historialCuentas.html',{'cuenta':cuentas})
 
+@login_required
 def catalogoCuenta(request):
 	cuentas = Cuenta.objects.all()
 	return render(request, 'contables/catalogoCuentas.html',{'cuenta':cuentas})
 
+@login_required
 def agregarCuentaPadre(request):
 	if request.method == 'POST':
 		Cuenta.objects.create(
@@ -159,6 +177,7 @@ def agregarCuentaPadre(request):
 			)
 	return render(request, 'contables/agregarCuenta.html')
 
+@login_required
 def agregarCuentaHija(request,cuentaId):
 	cuenta=Cuenta.objects.filter(id=cuentaId)
 	cuentaid=cuentaId
@@ -175,6 +194,7 @@ def agregarCuentaHija(request,cuentaId):
 			)
 	return render(request, 'contables/agregarCuentaHija.html',{'cuentas':cuenta,'cuentaId':cuentaid})
 
+@login_required
 def modificarCuenta(request,cuentaId):
 	cuentaid=cuentaId
 	cuentas = Cuenta.objects.filter(id=cuentaId)

@@ -19,4 +19,5 @@ from django.contrib import admin
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^', include('contables.urls', namespace='contables')),
+    url(r'^', include('myauth.urls', namespace='login'))
 ]
