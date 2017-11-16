@@ -74,6 +74,9 @@
           <i class="fa fa-list"></i>Periodos contables</div>
         <div class="card-body">
           <div class="table-responsive">
+          {% if cant == 0 %}
+            <a href="nuevoPeriodo/"><input type="button" value="Agregar Perido Contable"></a>
+            {% endif %}
             <table class="table" id="dataTable" width="100%" cellspacing="0">
               <thead>
                 <tr>
