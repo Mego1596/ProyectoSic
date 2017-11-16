@@ -20,6 +20,14 @@
             <span class="nav-link-text">Inicio</span>
           </a>
         </li>
+        {% if userId == True%}
+        <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Periodos contables">
+          <a class="nav-link" href="/signup/">
+            <i class="fa fa-fw fa-calendar"></i>
+            <span class="nav-link-text">Registrar Usuario</span>
+          </a>
+        </li>
+        {% endif %}
         <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Periodos contables">
           <a class="nav-link" href="/periodoConta/">
             <i class="fa fa-fw fa-calendar"></i>
