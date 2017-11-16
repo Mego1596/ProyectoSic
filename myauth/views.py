@@ -35,7 +35,7 @@ def settings(request):
             update.user = request.user
             update.save()
             messages.success(request, 'Tu configuracion ha sido correctamente guardada!')
-            return redirect('settings')
+            return redirect('/index/')
         else:
             messages.error(request, 'Porfavor corriga los errores:')
     else:
