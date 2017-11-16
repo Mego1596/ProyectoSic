@@ -1,12 +1,16 @@
 {%load staticfiles%}
 {%load static%}
 <!DOCTYPE html>
-<html>
+<html lang="es">
 	<head>
-		<title>{% block title %} {% endblock%}</title>
+		<meta charset="utf-8">
+ 		 <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  		<meta name="description" content="Sistema de contabilidad">
+		{% block title%} 
+		{% endblock %}
 		<script type="text/javascript" src="{%static 'js/jquery-3.2.1.min.js'%}"></script>
 		{% block head %}
-
 
 		{% endblock %}
 		  <!-- Bootstrap core CSS-->
