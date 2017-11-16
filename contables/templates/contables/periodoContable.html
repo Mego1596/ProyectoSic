@@ -20,14 +20,6 @@
             <span class="nav-link-text">Inicio</span>
           </a>
         </li>
-          {% if user == True %}
-      <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Periodos contables">
-          <a class="nav-link" href="/signup/">
-            <i class="fa fa-fw fa-calendar"></i>
-            <span class="nav-link-text">Registrar Usuario</span>
-          </a>
-        </li>
-      {% endif %}
         <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Periodos contables">
           <a class="nav-link" href="/periodoConta/">
             <i class="fa fa-fw fa-calendar"></i>
@@ -53,7 +45,7 @@
           </a>
         </li>
       </ul>
-      <ul class="navbar-nav ml-auto">
+      <ul class="navbar-nav ml-auto">    
         <li class="nav-item">
           <a class="nav-link" data-toggle="modal" data-target="#exampleModal" href="/settings/">
             <i class="fa fa-fw fa-sign-out"></i>Editar Perfil</a>
