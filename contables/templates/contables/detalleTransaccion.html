@@ -29,10 +29,16 @@ Listado Periodo Contable
 	function validarMontos() {
 	var x = document.getElementsByName("monto1")[0].value;
 	var y = document.getElementsByName("monto2")[0].value;
-    if(x == y){
-    alert('Transaccion Guardada con Exito');
-} else {
-	alert('No se cumple Dualidad ambos montos deben ser iguales')
+	var w = document.getElementsByName("cuentaId1")[0].value;
+	var z = document.getElementsByName("cuentaId2")[0].value;
+if(w == z){
+		alert('No puede ingresar la misma cuenta vuelva a ingresar los datos');
+}else{
+	    if(x == y){
+	    alert('Transaccion Guardada con Exito');
+	} else {
+		alert('No se cumple Dualidad ambos montos deben ser iguales');
+	}
 }
 }
 </script>
