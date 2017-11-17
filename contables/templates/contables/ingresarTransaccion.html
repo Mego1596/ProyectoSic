@@ -27,31 +27,31 @@ Listado Periodo Contable
 {% block content%}
 
 <form id="form-control">
-	{% csrf_token %}
-	<div align="center">
-		<table>
-			<tr>
-				<tc>
-					<td>Descripcion:</td>
-				</tc>
-				<tc>
-					<td><input type="text" name="descripcion"></td>
-				</tc>
-			</tr>
-			<tr>
-				<tc>
-					<td>Fecha</td>
-				</tc>
-				<tc>
-					<td><input type="date" name="fechaTransaccion"></td>
-				</tc>
-			</tr>
-				
-			
-		</table>
-		<input type="submit" value="Enviar" id="enviar" name="enviar">
-		<a href="/transaccion/{{periodoId}}"><input type="button" value="Regresar"></a>
-	</div>
-	<input type="hidden" value="{{periodoId}}" name="periodo" readonly="readonly"></td>
+  {% csrf_token %}
+  <div align="center">
+    <table>
+      <tr>
+        <tc>
+          <td>Descripcion:</td>
+        </tc>
+        <tc>
+          <td><input type="text" name="descripcion"></td>
+        </tc>
+      </tr>
+      <tr>
+        <tc>
+          <td>Fecha</td>
+        </tc>
+        <tc>
+          <td><input type="date" name="fechaTransaccion"></td>
+        </tc>
+      </tr>
+        
+      
+    </table>
+    <input type="submit" value="Enviar" id="enviar" name="enviar">
+    <a href="/transaccion/{{periodoId}}"><input type="button" value="Regresar"></a>
+  </div>
+  <input type="hidden" value="{{periodoId}}" name="periodo" readonly="readonly"></td>
 </form>
 {% endblock content%}
