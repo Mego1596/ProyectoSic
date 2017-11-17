@@ -49,7 +49,7 @@ def consultarTransaccion(request,periodoId):
 def consultaAfectado(request,periodoId,transaccionId):
 	cuenta =Cuenta.objects.all()
 	detalles = detalleTransaccion.objects.filter(id_Transaccion=transaccionId)
-	return render (request, 'contables/detalleCuentaAfectada.html',{'detalle':detalles,'cuentas':cuenta})
+	return render (request, 'contables/detalleCuentaAfectada.html',{'detalle':detalles,'cuentas':cuenta,'periodoId':periodoId})
 
 @login_required
 def nuevaTransaccion(request,periodoId):
@@ -67,40 +67,42 @@ def nuevaTransaccion(request,periodoId):
 @login_required
 def transacciones(request,periodoId):
 	periodo=periodoId
+	periodoCont=PeriodoContable.objects.filter(id_periodoContable=periodoId)
 	transaccion=Transaccion.objects.filter(id_periodoContable=periodoId)
-	return render(request, 'contables/transaccionLista.html',{'periodoId':periodo,'transacciones':transaccion})
+	return render(request, 'contables/transaccionLista.html',{'periodos':periodoCont,'periodoId':periodo,'transacciones':transaccion})
 
 @login_required
 def detallesTransaccion(request,periodoId,transaccionId):
 	periodo=periodoId
 	trans=transaccionId
 	cuentas=Cuenta.objects.all()
-	#el periodoId sirve para validar que si esta cerrado no se puede asignar detalle
+	
 	if request.method == 'POST':
-		for x in xrange(0,2):
-				if x == 0:
-					detalleTransaccion.objects.create(
-						debe =request.POST.get('monto'+str(x+1)), 
-						haber = 0.00,
-						id_Transaccion =Transaccion.objects.get(id_Transaccion=request.POST['idtrans'+str(x+1)]) ,
-						id_cuenta =Cuenta.objects.get(id=request.POST['cuentaId'+str(x+1)]),
-						)
-					cuentaActualizar = Cuenta.objects.get(id=request.POST['cuentaId'+str(x+1)])	
-					debeac = cuentaActualizar.getDebe()
-					cuentaActualizar.debe=float(debeac)+float(request.POST['monto'+str(x+1)])					
-					cuentaActualizar.save()
-				else:
-					if x == 1:
+		if request.POST['monto1'] == request.POST['monto2']:
+			for x in xrange(0,2):
+					if x == 0:
 						detalleTransaccion.objects.create(
-						debe = 0.00,
-						haber =request.POST.get('monto'+str(x+1)), 
-						id_Transaccion =Transaccion.objects.get(id_Transaccion=request.POST['idtrans'+str(x+1)]) ,
-						id_cuenta =Cuenta.objects.get(id=request.POST['cuentaId'+str(x+1)]),
-						)
-					cuentaActualizar2 = Cuenta.objects.get(id=request.POST['cuentaId'+str(x+1)])	
-					haberac = cuentaActualizar2.getHaber()
-					cuentaActualizar2.haber=float(haberac)+float(request.POST['monto'+str(x+1)])					
-					cuentaActualizar2.save()
+							debe =request.POST.get('monto'+str(x+1)), 
+							haber = 0.00,
+							id_Transaccion =Transaccion.objects.get(id_Transaccion=request.POST['idtrans'+str(x+1)]) ,
+							id_cuenta =Cuenta.objects.get(id=request.POST['cuentaId'+str(x+1)]),
+							)
+						cuentaActualizar = Cuenta.objects.get(id=request.POST['cuentaId'+str(x+1)])	
+						debeac = cuentaActualizar.getDebe()
+						cuentaActualizar.debe=float(debeac)+float(request.POST['monto'+str(x+1)])					
+						cuentaActualizar.save()
+					else:
+						if x == 1:
+							detalleTransaccion.objects.create(
+							debe = 0.00,
+							haber =request.POST.get('monto'+str(x+1)), 
+							id_Transaccion =Transaccion.objects.get(id_Transaccion=request.POST['idtrans'+str(x+1)]) ,
+							id_cuenta =Cuenta.objects.get(id=request.POST['cuentaId'+str(x+1)]),
+							)
+						cuentaActualizar2 = Cuenta.objects.get(id=request.POST['cuentaId'+str(x+1)])	
+						haberac = cuentaActualizar2.getHaber()
+						cuentaActualizar2.haber=float(haberac)+float(request.POST['monto'+str(x+1)])					
+						cuentaActualizar2.save()
 	return render(request, 'contables/detalleTransaccion.html',{'periodoId':periodo,'transaccionId':trans,'cuenta':cuentas})
 
 @login_required
@@ -151,12 +153,13 @@ def balancesComprobacion(request,periodoId):
 			balance.debe=float(sumaDebe)
 			balance.haber=float(sumaHaber)
 			balance.save()
-	return render(request,'contables/balanceComprobacion.html',{'cuenta':cuentas,'estado':balances})
+	return render(request,'contables/balanceComprobacion.html',{'cuenta':cuentas,'estado':balances,'periodoId':periodoId})
 
 @login_required
 def historialCuenta(request,periodoId):
 	cuentas = Cuenta.objects.all()
-	return render(request,'contables/historialCuentas.html',{'cuenta':cuentas})
+	periodo=periodoId
+	return render(request,'contables/historialCuentas.html',{'cuenta':cuentas,'periodoId':periodo})
 
 @login_required
 def catalogoCuenta(request):
@@ -222,3 +225,8 @@ def modificarCuenta(request,cuentaId):
 					cuentaParcial.save()
 
 	return render (request, 'contables/modificarCuenta.html',{'cuenta':cuentas})
+
+
+def contabilidadGeneral(request,periodoId):
+	periodos= periodoId
+	return render(request, 'contables/contabilidadGeneral.html', {'periodoId':periodos})

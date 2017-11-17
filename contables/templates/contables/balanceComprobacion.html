@@ -26,7 +26,8 @@ Listado Periodo Contable
 {% endblock head%}
 {% block content %}
 <div align="center">
-	<form id="form-control">
+<a href="/generador/{{periodoId}}">Regresar</a>
+	<form id="form-control" method="POST">
 	{%csrf_token%}
 	<input type="submit" name="enviar" id="enviar" value="Cargar Balance de Comprobacion">
 	</form>

@@ -19,4 +19,5 @@ urlpatterns = [
     url(r'^agregarCuenta/$', views.agregarCuentaPadre),
     url(r'^agregarCuentaHija/(?P<cuentaId>\d+)/$', views.agregarCuentaHija),
     url(r'^modificarCuenta/(?P<cuentaId>\d+)/$', views.modificarCuenta),
+    url(r'^contabilidadGeneral/(?P<periodoId>\d+)/$', views.contabilidadGeneral),
 ]

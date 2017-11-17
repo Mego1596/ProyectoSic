@@ -8,8 +8,12 @@ Listado Periodo Contable
 <div align="center">
 <table>
 <tr>
+	{% for periodo in periodos %}
+	{%if periodo.estadoPeriodo == True%}
 	<td><a href="/nuevaTrans/{{periodoId}}">Agregar Transaccion</a></td>
-	<td><a href="/menu/{{periodoId}}">Regresar</a></td>
+	{% endif %}
+	{% endfor %}
+	<td><a href="/contabilidadGeneral/{{periodoId}}">Regresar</a></td>
 </tr>
 </table>
 	<table>	
@@ -23,7 +27,11 @@ Listado Periodo Contable
 	<tr>
 		<td>{{trans.descripcion}}</td>
 		<td>{{trans.fecha}}</td>
+		{% for periodo in periodos %}
+		{%if periodo.estadoPeriodo == True%}
 		<td><a href="/detalleTrans/{{periodoId}}/{{trans.id_Transaccion}}">Asignar Detalles</a></td>
+		{% endif %}
+		{% endfor %}
 	</tr>
 	{% endfor %}
 	</table>
