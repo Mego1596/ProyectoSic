@@ -3,7 +3,27 @@
   {% block title %}
   <title>Listado de periodos contables</title>
   {% endblock title %}
+{% block head%}
+<script type="text/javascript"> 
+    $(document).ready(function() {
+        $('#enviar').click(function(e){
+            e.preventDefault();
+                var dataString = $('#form-control').serialize();
 
+            alert('Datos serializados: '+dataString);
+
+            $.ajax({
+                type: "POST",
+                url: '',
+                data: dataString,
+                success: function(data) {
+                window.location.replace("");
+                }
+            });
+        });
+    });
+</script>
+{% endblock head%}
 {% block content %}
 <body class="fixed-nav sticky-footer bg-dark" id="page-top">
   <!-- Navigation-->
@@ -96,7 +116,11 @@
                   <td>Cerrado</td>
                   {% endif %}
                   <td>
-                    <button type="button" class="btn btn-outline-primary">Cerrar periodo</button>
+                    <form id="form-control" method="POST">
+                      {%csrf_token%}
+                        <button type="submit" class="btn btn-outline-primary" name="enviar" id="enviar">Cerrar periodo</button>
+                        <input type="hidden" name="idperiodo" value="{{periodo.id_periodoContable}}">
+                    </form>
                   </td>
                 </tr>
                 {% endfor %}
