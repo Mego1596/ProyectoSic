@@ -89,7 +89,11 @@
       <div class="card mb-3">
         <div class="card-header">
           <i class="fa fa-list"></i> Listado Transacciones
-          <a class="btn btn-primary justify-content-end" href="/nuevaTrans/{{periodoId}}" role="button">Agregar transaccion</a>
+          {% for periodo in periodos %}
+                  {%if periodo.estadoPeriodo == True%}
+                  <a class="btn btn-primary justify-content-end" href="/nuevaTrans/{{periodoId}}" role="button">Agregar transaccion</a>
+                  {% endif %}
+                  {% endfor %}
         </div>
         <div class="card-body">
           <div class="table-responsive">   
