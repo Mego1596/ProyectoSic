@@ -80,6 +80,7 @@
                   <th>Fecha fin</th>
                   <th>Ver</th>
                   <th>Estado</th>
+                  <th>Cerrar Periodo</th>
                 </tr>
               </thead>
               <tbody>
@@ -94,6 +95,9 @@
                   {%if periodo.estadoPeriodo == False%}
                   <td>Cerrado</td>
                   {% endif %}
+                  <td>
+                    <button type="button" class="btn btn-outline-primary">Cerrar periodo</button>
+                  </td>
                 </tr>
                 {% endfor %}
               </tbody>
