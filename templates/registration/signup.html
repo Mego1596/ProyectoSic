@@ -1,47 +1,62 @@
 {% extends 'base.html' %}
 
+{% block title %}
+<title>
+  Registrar usuario
+</title>
+{% endblock title %}
+
 {% block content %}
-  <h2>Registrarse</h2>
-  <form method="post">
-    <div class="row uniform 50%">
-    {% csrf_token %}
-    {% if messages %}
-    {% for message in messages %}
-    {% if message.tags == 'success' %}
-    <p style="color: green"> <u>{{ message }}</u></p>
-        {% else %}
-    <p style="color: red"><u>{{ message }}</u> </p>
-    {% endif %}
-    {% endfor %}
-    {% endif %}
-    {% for error in form.non_field_errors %}
-    <div class="alert alert-danger" >
-      <strong style="color: red">{{ error|escape }}</strong>
-    </div>
-    {% endfor %}
-    {% for field in form %}
-      {% for error in field.errors %}
-          <div class="alert alert-danger">
-            <strong style="color: red">{{ error|escape }}</strong>
+<body class="bg-dark">
+  <div class="container">
+    <div class="card card-register mx-auto mt-5">
+      <div class="card-header">Registrar una cuenta</div>
+      <div class="card-body">
+        <form method="POST">
+          {% csrf_token %}
+            {% if messages %}
+            {% for message in messages %}
+              {% if message.tags == 'success' %}
+                <p style="color: green"> <u>{{ message }}</u></p>
+              {% else %}
+                <p style="color: red"><u>{{ message }}</u> </p>
+              {% endif %}
+            {% endfor %}
+          {% endif %}
+          {% for error in form.non_field_errors %}
+            <div class="alert alert-danger" >
+              <strong style="color: red">{{ error|escape }}</strong>
+            </div>
+          {% endfor %}
+          {% for field in form %}
+            {% for error in field.errors %}
+              <div class="alert alert-danger">
+                <strong style="color: red">{{ error|escape }}</strong>
+              </div>
+            {% endfor %}
+            <div class="12u$ form-group">
+              <div class="form-row">
+                {{ field.label_tag }}
+                {% if field.help_text %}
+                  <small style="color: grey">{{ field.help_text|safe }}</small>
+                {% endif %}
+                {{ field }}        
+              </div>
+            </div>
+          {% endfor %}          
+          <div class="12u$">
+            <ul class="actions">
+              <li><button class="button special btn btn-primary btn-block special button" type="submit">Registrarse</button></li>
+            </ul>
           </div>
-      {% endfor %}
-      <div class="12u$">
-        {{ field.label_tag }}
-        {% if field.help_text %}
-        <small style="color: grey">{{ field.help_text|safe }}</small>
-        {% endif %}
-        {{ field }}
-     </div>
-  {% endfor %}
-    <div class="12u$">
-      <ul class="actions">
-        <li><button class="button special" type="submit">Registrarse</button></li>
-      </ul>
+        <div class="text-center">
+          <a class="d-block small mt-3" href="login.html">Iniciar sesion</a>
+        </div>
+        </form>
+
+      </div>
     </div>
   </div>
-    <div align="left">
-    <br>
-    <a href="/index/">Regresar</a>
-    </div>
-  </form>
-{% endblock %}
+</body>
+{% endblock content %}
+

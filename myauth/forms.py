@@ -12,9 +12,9 @@ class UserChangeForm(forms.ModelForm):
                              label='Imagen',
                              required=False, )
     email = forms.EmailField(label='Email',
-                             help_text='Un correo valido porfavor',
+                             help_text='Un correo valido',
                              required=True, )
 
     class Meta:
         model = MyUser
-        fields = ('username', 'avatar', 'email', )
+        fields = ('username', 'email', )
