@@ -149,11 +149,11 @@ if(w == z){
                             Cuenta: <select style="width:80%" name="cuentaId1"> 
                               {% for cuenta1 in cuenta %}
                               {% if cuenta1.codigo_dependiente == null %}
-                              <option value="{{cuentas.id}}">{{cuenta1.codigo}}    {{cuenta1.nombre}} {{cuentas.descripcion}}</option>
+                              <option value="{{cuenta1.id}}">{{cuenta1.codigo}}    {{cuenta1.nombre}} {{cuentas.descripcion}}</option>
                               {% endif%}
                               {% for cuenta2 in cuenta %} 
                               {% if cuenta1.id == cuenta2.codigo_dependiente %}
-                              <option value="{{cuentas.id}}">{{cuenta2.codigo}}    {{cuenta2.nombre}} {{cuentas.descripcion}}</option>
+                              <option value="{{cuenta2.id}}">{{cuenta2.codigo}}    {{cuenta2.nombre}} {{cuentas.descripcion}}</option>
                               {% endif  %}
                               {% endfor %}
                               {% endfor %}
@@ -184,14 +184,14 @@ if(w == z){
                       <tbody>
                         <tr>
                           <td>
-                            Cuenta: <select style="width:80%" name="cuentaId1"> 
+                            Cuenta: <select style="width:80%" name="cuentaId2"> 
                               {% for cuenta1 in cuenta %}
                               {% if cuenta1.codigo_dependiente == null %}
-                              <option value="{{cuentas.id}}">{{cuenta1.codigo}}    {{cuenta1.nombre}} {{cuentas.descripcion}}</option>
+                              <option value="{{cuenta1.id}}">{{cuenta1.codigo}}    {{cuenta1.nombre}} {{cuentas.descripcion}}</option>
                               {% endif%}
                               {% for cuenta2 in cuenta %} 
                               {% if cuenta1.id == cuenta2.codigo_dependiente %}
-                              <option value="{{cuentas.id}}">{{cuenta2.codigo}}    {{cuenta2.nombre}} {{cuentas.descripcion}}</option>
+                              <option value="{{cuenta2.id}}">{{cuenta2.codigo}}    {{cuenta2.nombre}} {{cuentas.descripcion}}</option>
                               {% endif  %}
                               {% endfor %}
                               {% endfor %}

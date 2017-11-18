@@ -36,6 +36,18 @@ def nuevoPeriodo(request):
 				fechaFin=request.POST['fechaFin'],
 				estadoPeriodo=True
 			)
+			bal = estadoComprobacion.objects.get(id=1)
+			bal.debe=0.00
+			bal.haber= 0.00
+			bal.save()
+			cuenta = Cuenta.objects.all()
+			for cuentas in cuenta:
+				cuentaParcial=Cuenta.objects.get(id=cuentas.id)
+				cuentaParcial.saldoAcreedor=0.00
+				cuentaParcial.saldoDeudor=0.00
+				cuentaParcial.debe=0.00
+				cuentaParcial.haber=0.00
+				cuentaParcial.save()
 			return HttpResponse('No se almacenaron los datos')
 		return render(request, 'contables/nuevoPeriodo.html')
 
