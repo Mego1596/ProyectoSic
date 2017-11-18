@@ -236,3 +236,7 @@ def modificarCuenta(request,cuentaId):
 def contabilidadGeneral(request,periodoId):
 	periodos= periodoId
 	return render(request, 'contables/contabilidadGeneral.html', {'periodoId':periodos})
+
+
+def estadosResultado(request,periodoId):
+	return render(request, 'contables/estadoResultado.html')

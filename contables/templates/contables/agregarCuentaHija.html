@@ -11,7 +11,7 @@ Listado Periodo Contable
             e.preventDefault();
                 var dataString = $('#form-control').serialize();
 
-            alert('Datos serializados: '+dataString);
+            
 
             $.ajax({
                 type: "POST",
@@ -23,7 +23,8 @@ Listado Periodo Contable
             });
         });
     });
-</script>
+</script>         
+
 {% endblock head %}
 
 {% block content %}
@@ -37,7 +38,7 @@ Listado Periodo Contable
 					<td>Codigo de Cuenta:</td>
 				</tc>
 				<tc>
-					<td><input type="number" name="codigoCuenta" placeholder="{{cuenta.codigo}}+0#"></td>
+					<td><input id="codigoCuenta" type="number" name="codigoCuenta" placeholder="{{cuenta.codigo}}+##"></td>
 				</tc>
 			</tr>
 		{% endfor %}
@@ -69,6 +70,10 @@ Listado Periodo Contable
 		<input type="submit" name="enviar" id="enviar" value="Guardar">
 		<a href="/catalogo/"><input type="button" value="Regresar"></a>
 	</form>
-
+<script>
+window.onload = function() {
+  document.getElementById("codigoCuenta").focus();
+};
+</script>
 </div>
 {% endblock content %}
