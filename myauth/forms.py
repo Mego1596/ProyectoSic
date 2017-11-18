@@ -8,11 +8,7 @@ class UserChangeForm(forms.ModelForm):
     password hash display field.
     """
     username = forms.CharField(label='Usuario', required=True, )
-    avatar = forms.ImageField(
-                             label='Imagen',
-                             required=False, )
     email = forms.EmailField(label='Email',
-                             help_text='Un correo valido',
                              required=True, )
 
     class Meta:
