@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Listado Periodo Contable
+{% endblock title %}
+
+{% block head %}
+<script type="text/javascript"> 
+    $(document).ready(function() {
+        $('#enviar').click(function(e){
+            e.preventDefault();
+                var dataString = $('#form-control').serialize();
+
+           
+
+            $.ajax({
+                type: "POST",
+                url: '',
+                data: dataString,
+                success: function(data) {
+                window.location.replace("");
+                }
+            });
+        });
+    });
+</script>
+{% endblock head %}
+
+{% block content %}
+<div>
+<table>
+<tr><td><h3>Ingresos</h3></td></tr>
+	<tr>
+		<td>Cuentas</td>
+		<td>Descripcion</td>
+		<td></td>
+		<td>Total</td>
+	</tr>
+	<tr>
+	{% for ingresos in Ingreso%}
+	<td>{{ingresos.nombre}}</td>
+	<td>{{ingresos.descripcion}}</td>
+	<td align="center"></td>
+	<td align="center">{{ingresos.saldoAcreedor}}</td>
+	</tr>
+	{% endfor %}
+	<tr>
+		<td></td>
+		<td></td>
+		<td></td>
+		<td>_____</td>
+	</tr>
+	<tr>
+	<td>Total</td>
+	<td></td>
+	<td align="center"></td>
+	<td align="center">{{sumaIngreso}}</td>
+	</tr>
+	<tr><td><h3>Gastos</h3></td></tr>
+		<tr>
+		<td>Cuentas</td>
+		<td>Descripcion</td>
+		<td>Total</td>
+		<td></td>
+	</tr>
+	<tr>
+	{% for gastos in Gasto%}
+	<td>{{gastos.nombre}}</td>
+	<td>{{gastos.descripcion}}</td>
+	<td align="center">{{gastos.saldoDeudor}}</td>
+	<td align="center"></td>
+	</tr>
+	{% endfor %}
+		<tr>
+		<td></td>
+		<td></td>
+		<td>_____</td>
+		<td></td>
+	</tr>
+	<tr>
+	<td>Total</td>
+	<td></td>
+	<td align="center">{{sumaGastos}}</td>
+	<td align="center"></td>
+	</tr>
+
+	<tr>
+		{% if sumaIngreso > sumaGastos%}
+		<td>Utilidad</td>
+		<td>{{util}}</td>
+		{% endif %}
+		{% if sumaIngreso < sumaGastos%}
+		<td>Perdida</td>
+		<td>({{util}})</td>
+		{% endif%}
+		{% if sumaIngreso == sumaGastos %}
+		<td>No existe Utilidad ni Perdida</td>
+		{% endif %}
+	</tr>
+	</table>
+</div>
+{% endblock content %}

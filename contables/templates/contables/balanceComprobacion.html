@@ -27,7 +27,7 @@ Listado Periodo Contable
 {% block content %}
 <div align="center">
 <a href="/generador/{{periodoId}}">Regresar</a>
-	<form id="form-control" method="POST">
+	<form id="form-control">
 	{%csrf_token%}
 	<input type="submit" name="enviar" id="enviar" value="Cargar Balance de Comprobacion">
 	</form>
@@ -45,10 +45,10 @@ Listado Periodo Contable
 	</tr>
 		{% endfor %}
 	<tr>
-		{% for bal in estado%}
+		{% for balance in estado%}
 		<td>Total</td>
-		<td><b>{{bal.debe}}</b></td>
-		<td><b>{{bal.haber}}</b></td>
+		<td><b>{{balance.debe}}</b></td>
+		<td><b>{{balance.haber}}</b></td>
 	</tr>
 		{% endfor %}
 	</table>
