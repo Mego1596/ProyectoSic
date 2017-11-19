@@ -11,7 +11,7 @@
   <div class="container">
     <div class="card card-register mx-auto mt-5">
       <div class="card-header">Registrar una cuenta</div>
-      <div class="card-body">
+      <div class="card-body container">
         <form method="POST">
           {% csrf_token %}
             {% if messages %}
@@ -35,19 +35,19 @@
               </div>
             {% endfor %}
             <div class="12u$ form-group">
-              <div class="form-row">
-                {{ field.label_tag }}
-                {% if field.help_text %}
-                  <small style="color: grey">{{ field.help_text|safe }}</small>
-                {% endif %}
-                {{ field }}        
+              <div class="row">
+                <div class="col-3">
+                  {{ field.label_tag }}
+                </div>
+                <div class="col-8">
+                  {{ field }}
+                </div>
               </div>
             </div>
           {% endfor %}          
           <div class="12u$">
-            <ul class="actions">
-              <li><button class="button special btn btn-primary btn-block special button" type="submit">Registrarse</button></li>
-            </ul>
+                <button class="button special btn btn-primary  special button" type="submit">Registrarse</button>
+                <a href="/index/" role="button" class="btn btn-outline-secondary">Inicio</a>
           </div>
         </form>
 

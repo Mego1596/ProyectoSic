@@ -1,16 +1,14 @@
 {% extends 'base.html' %}
 
 {% block title %}
-<title>
-  Registrar usuario
-</title>
+<title>Editar usuario</title>
 {% endblock title %}
 
 {% block content %}
 <body class="bg-dark">
   <div class="container">
     <div class="card card-register mx-auto mt-5">
-      <div class="card-header">Modifica tus datos {{ request.user.get_full_name}}</div>
+      <div class="card-header"><i class="fa fa-edit"></i> Edita tus datos {{ request.user.get_full_name}}</div>
       <div class="card-body">
         <form method="post" action='{{ action_url }}' enctype='multipart/form-data'>
           {% csrf_token %}
@@ -35,16 +33,19 @@
                 </div>
             {% endfor %}
             <div class="12u$ form-group">
-              <div class="form-row">
-                {{ field.label_tag }}
-                {% if field.help_text %}
-                  <small style="color: grey">{{ field.help_text|safe }}</small>
-                {% endif %}
-                {{ field }}  
+              <div class="row">
+                <div class="col-2">
+                  {{ field.label_tag }}
+                </div>
+                <div class="col">
+                  {{ field }} 
+                </div>
               </div>
            </div>
           {% endfor %}
           <button class="button special big btn btn-primary" type="submit">Modificar</button>
+          <a href="/settings/password/" role="button" class="btn btn-outline-primary">Modificar contraseña</a>
+          <a href="/index/" role="button" class="btn btn-outline-secondary">Inicio</a>
         </form>
       </div>
     </div>
