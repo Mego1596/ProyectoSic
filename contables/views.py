@@ -26,6 +26,9 @@ def periodoConta(request):
 		periodoParcial = PeriodoContable.objects.get(id_periodoContable=request.POST['idperiodo'])
 		periodoParcial.estadoPeriodo = False
 		periodoParcial.save()
+	
+	periodo = PeriodoContable.objects.all()
+
 	return render(request, 'contables/periodoContable.html',{'periodoCont':periodo,'cant':cantidad})
 
 @login_required
