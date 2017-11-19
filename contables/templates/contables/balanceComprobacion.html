@@ -39,7 +39,7 @@ Listado Periodo Contable
 	</tr>
 	<tr>
 		{% for cuentas in cuenta %}
-		{% if cuentas.haber != 0.00 or cuentas.debe != 0.00%}
+		{% if cuentas.saldoDeudor != 0.00 or cuentas.saldoAcreedor != 0.00%}
 		<td>{{cuentas.nombre}}</td>
 		<td>{{cuentas.saldoDeudor}}</td>
 		<td>{{cuentas.saldoAcreedor}}</td>
