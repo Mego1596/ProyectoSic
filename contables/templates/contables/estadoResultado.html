@@ -51,11 +51,13 @@ Listado Periodo Contable
 		<td>_____</td>
 	</tr>
 	<tr>
+	{% for resultados in resultado %}
 	<td>Total</td>
 	<td></td>
 	<td align="center"></td>
-	<td align="center">{{sumaIngreso}}</td>
+	<td align="center">{{resultados.haber}}</td>
 	</tr>
+	{% endfor %}
 	<tr><td><h3>Gastos</h3></td></tr>
 		<tr>
 		<td>Cuentas</td>
@@ -78,25 +80,29 @@ Listado Periodo Contable
 		<td></td>
 	</tr>
 	<tr>
+	{% for resultados in resultado %}
 	<td>Total</td>
 	<td></td>
-	<td align="center">{{sumaGastos}}</td>
+	<td align="center">{{resultados.debe}}</td>
 	<td align="center"></td>
+	{% endfor %}
 	</tr>
 
 	<tr>
-		{% if sumaIngreso > sumaGastos%}
+	{% for resultados in resultado%}
+		{% if resultados.haber > resultados.debe%}
 		<td>Utilidad</td>
-		<td>{{util}}</td>
+		<td>{{resultados.utilidades}}</td>
 		{% endif %}
-		{% if sumaIngreso < sumaGastos%}
+		{% if resultados.haber < resultados.debe%}
 		<td>Perdida</td>
-		<td>({{util}})</td>
+		<td>({{resultados.utilidades}})</td>
 		{% endif%}
-		{% if sumaIngreso == sumaGastos %}
+		{% if resultados.haber == resultados.debe %}
 		<td>No existe Utilidad ni Perdida</td>
 		{% endif %}
 	</tr>
+	{% endfor%}
 	</table>
 </div>
 {% endblock content %}

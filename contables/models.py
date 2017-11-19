@@ -59,3 +59,9 @@ class estadoComprobacion(models.Model):
 	id= models.AutoField(primary_key=True)
 	debe =models.DecimalField('debe', max_digits=50, decimal_places=2, blank=False, null=True, validators=[MinValueValidator(0)])
 	haber= models.DecimalField('haber', max_digits=50, decimal_places=2, blank=False, null=True, validators=[MinValueValidator(0)])
+
+class estadoResulta(models.Model):
+	id=models.AutoField(primary_key=True)
+	debe =models.DecimalField('debe', max_digits=50, decimal_places=2, blank=False, null=True, validators=[MinValueValidator(0)])
+	haber= models.DecimalField('haber', max_digits=50, decimal_places=2, blank=False, null=True, validators=[MinValueValidator(0)])
+	utilidades=models.DecimalField('Utilildad', max_digits=50, decimal_places=2, blank=False, null=True, validators=[MinValueValidator(0)])

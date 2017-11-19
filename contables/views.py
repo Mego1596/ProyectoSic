@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 from django.http import HttpResponse
 from django.shortcuts import render,redirect
-from .models import PeriodoContable,Transaccion,Cuenta,detalleTransaccion,estadoComprobacion
+from .models import PeriodoContable,Transaccion,Cuenta,detalleTransaccion,estadoComprobacion,estadoResulta
 from myauth.models import  MyUser
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
@@ -137,14 +137,20 @@ def balancesComprobacion(request,periodoId):
 	debeParcial = float(0.00)
 	sumaHaber=float(0.00)
 	sumaDebe=float(0.00)
+	
 
 	for cuenta in cuentas:
 		cuentaSet=Cuenta.objects.get(id=cuenta.id)
 		cuentaSet.saldoAcreedor=0.00
 		cuentaSet.saldoDeudor=0.00
 		cuentaSet.save()
+		bal=estadoComprobacion.objects.get(id=int(1))
+		bal.debe=float(0.00)
+		bal.haber=float(0.00)
+		bal.save()
 
 	for cuenta in cuentas:
+		bal=estadoComprobacion.objects.get(id=int(1))
 		cuentaParcial=Cuenta.objects.get(id=cuenta.id)
 		for transacciones in transaccion:
 			for detalle in detalles:
@@ -155,29 +161,27 @@ def balancesComprobacion(request,periodoId):
 		if haberParcial > debeParcial:
 			cuentaParcial.saldoAcreedor=float(haberParcial)-float(debeParcial)
 			cuentaParcial.save()
+			bal.haber=float(bal.haber)+float(cuentaParcial.saldoAcreedor)
+			bal.save()
 		if debeParcial > haberParcial:
 			cuentaParcial.saldoDeudor=float(debeParcial)-float(haberParcial)
 			cuentaParcial.save()
+			bal.debe=float(bal.debe)+float(cuentaParcial.saldoDeudor)
+			bal.save()
 		if debeParcial == haberParcial:
 			cuentaParcial.saldoAcreedor=0.00
 			cuentaParcial.saldoDeudor=0.00
 			cuentaParcial.save()
+			bal.debe=float(bal.debe)+float(cuentaParcial.saldoDeudor)
+			bal.haber=float(bal.haber)+float(cuentaParcial.saldoAcreedor)
+			bal.save()
 		haberParcial=0.00
 		debeParcial=0.00
-		sumaHaber=float(sumaHaber)+ float(cuenta.getSaldoAcreedor())
-		sumaDebe=float(sumaDebe)+ float(cuenta.getSaldoDeudor())
 
-		balance= estadoComprobacion.objects.get(id=1)
-		balance.debe=float(sumaDebe)
-		balance.haber=float(sumaHaber)
-		balance.save()
-
-	balances=estadoComprobacion.objects.all()
+	balanceC= estadoComprobacion.objects.all()
 	transaccion = Transaccion.objects.filter(id_periodoContable=periodoId)
 	cuentas=Cuenta.objects.all()	
-	print(balance.debe)
-	print(balance.haber)
-	return render(request, 'contables/balanceComprobacion.html',{'cuenta':cuentas,'estado':balances,'periodoId':periodoId})
+	return render(request, 'contables/balanceComprobacion.html',{'cuenta':cuentas,'estados':balanceC,'periodoId':periodoId})
 
 @login_required
 def estadosResultado(request,periodoId):
@@ -185,10 +189,15 @@ def estadosResultado(request,periodoId):
 	cuentasResultadoAcreedor = Cuenta.objects.filter(descripcion__iexact='Ingreso')
 	transaccion = Transaccion.objects.filter(id_periodoContable=periodoId)
 	detalles = detalleTransaccion.objects.all()
+	result=estadoResulta.objects.all()
 	haberParcial= float(0.00)
 	debeParcial= float(0.00)
-	sumaHaber= float(0.00)
-	sumaDebe= float(0.00)
+	estadoRes = estadoResulta.objects.get(id=1)
+	estadoRes.debe= float(0.00)
+	estadoRes.haber=float(0.00)
+	estadoRes.utilidades=float(0.00)
+	estadoRes.save()
+
 	for cuenta in cuentasResultadoDeudor:
 		cuentaSet=Cuenta.objects.get(id=cuenta.id)
 		cuentaSet.saldoDeudor=0.00
@@ -202,6 +211,7 @@ def estadosResultado(request,periodoId):
 
 	for cuenta in cuentasResultadoAcreedor:
 		cuentaParcial = Cuenta.objects.get(id=cuenta.id)
+		estadoRes = estadoResulta.objects.get(id=1)
 		for transacciones in transaccion:
 			for detalle in detalles:
 				if detalle.id_cuenta_id ==cuenta.id:
@@ -209,11 +219,15 @@ def estadosResultado(request,periodoId):
 						haberParcial=float(haberParcial)+float(detalle.haber)
 		cuentaParcial.saldoAcreedor=float(haberParcial)
 		cuentaParcial.save()
+		estadoRes.haber=float(estadoRes.haber)+ float(cuentaParcial.saldoAcreedor)
+		estadoRes.utilidades=float(estadoRes.utilidades)+float(cuentaParcial.saldoAcreedor)
+		estadoRes.save()
 		haberParcial=0.00
-		sumaHaber = float(sumaHaber)+ float(cuenta.getSaldoAcreedor())
+		
 
 	for cuenta in cuentasResultadoDeudor:
 		cuentaParcial = Cuenta.objects.get(id=cuenta.id)
+		estadoRes = estadoResulta.objects.get(id=1)
 		for transacciones in transaccion:
 			for detalle in detalles:
 				if detalle.id_cuenta_id ==cuenta.id:
@@ -221,17 +235,19 @@ def estadosResultado(request,periodoId):
 						debeParcial=float(debeParcial)+float(detalle.debe)
 		cuentaParcial.saldoDeudor=float(debeParcial)
 		cuentaParcial.save()
+		estadoRes.debe=float(estadoRes.debe)+ float(cuentaParcial.saldoDeudor)
+		estadoRes.utilidades=float(estadoRes.utilidades)-float(cuentaParcial.saldoDeudor)
+		estadoRes.save()
 		debeParcial=0.00
-		sumaDebe = float(sumaDebe)+ float(cuenta.getSaldoDeudor())
+	
 
-	Utilidades = float(sumaHaber)-float(sumaDebe)
 	cuentasResultadoDeudor = Cuenta.objects.filter(descripcion__iexact='Costo de Venta')
 	cuentasResultadoAcreedor = Cuenta.objects.filter(descripcion__iexact='Ingreso')
 	transaccion = Transaccion.objects.filter(id_periodoContable=periodoId)
 	detalles = detalleTransaccion.objects.all()
+	estado = estadoResulta.objects.all()
 
-
-	return render(request, 'contables/estadoResultado.html', {'Gasto':cuentasResultadoDeudor,'util':Utilidades,'sumaGastos':sumaDebe,'sumaIngreso':sumaHaber,'Ingreso':cuentasResultadoAcreedor})
+	return render(request, 'contables/estadoResultado.html', {'Gasto':cuentasResultadoDeudor,'resultado':estado,'Ingreso':cuentasResultadoAcreedor})
 
 @login_required
 def historialCuenta(request,periodoId):
