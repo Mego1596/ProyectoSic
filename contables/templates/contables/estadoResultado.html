@@ -33,18 +33,23 @@ Listado Periodo Contable
 	<tr>
 		<td>Cuentas</td>
 		<td>Descripcion</td>
+		<td>------</td>
 		<td></td>
 		<td>Total</td>
 	</tr>
 	<tr>
 	{% for ingresos in Ingreso%}
+	{% if ingresos.saldoAcreedor != 0.00 %}
 	<td>{{ingresos.nombre}}</td>
 	<td>{{ingresos.descripcion}}</td>
 	<td align="center"></td>
+	<td></td>
 	<td align="center">{{ingresos.saldoAcreedor}}</td>
 	</tr>
+	{% endif %}
 	{% endfor %}
 	<tr>
+		<td></td>
 		<td></td>
 		<td></td>
 		<td></td>
@@ -52,6 +57,7 @@ Listado Periodo Contable
 	</tr>
 	<tr>
 	{% for resultados in resultado %}
+	<td></td>
 	<td>Total</td>
 	<td></td>
 	<td align="center"></td>
@@ -62,18 +68,57 @@ Listado Periodo Contable
 		<tr>
 		<td>Cuentas</td>
 		<td>Descripcion</td>
+		<td>------</td>
 		<td>Total</td>
 		<td></td>
 	</tr>
 	<tr>
 	{% for gastos in Gasto%}
+	{% if gastos.saldoDeudor != 0.00 %}
 	<td>{{gastos.nombre}}</td>
 	<td>{{gastos.descripcion}}</td>
+	<td></td>
+	<td align="center">{{gastos.saldoDeudor}}</td>
+	<td align="center"></td>
+	{% endif %}
+	</tr>
+	{% endfor %}
+	<tr>
+	{% for gastos in Gasto2%}
+	{% if gastos.saldoDeudor != 0.00 %}
+	<td>{{gastos.nombre}}</td>
+	<td style="font-size: 13px">{{gastos.descripcion}}</td>
+	<td></td>
 	<td align="center">{{gastos.saldoDeudor}}</td>
 	<td align="center"></td>
 	</tr>
+	{% endif %}
 	{% endfor %}
+	<tr>
+	{% for gastos in Gasto3 %}
+	{% if gastos.saldoDeudor != 0.00 %}
+	<td>{{gastos.nombre}}</td>
+	<td>{{gastos.descripcion}}</td>
+	<td></td>
+	<td align="center">{{gastos.saldoDeudor}}</td>
+	<td align="center"></td>
+	</tr>
+	{% endif %}
+	{% endfor %}
+	<tr>
+	{% for gastos in Gasto4 %}
+	{% if gastos.saldoDeudor != 0.00 %}
+	<td>{{gastos.nombre}}</td>
+	<td>{{gastos.descripcion}}</td>
+	<td></td>
+	<td align="center">{{gastos.saldoDeudor}}</td>
+	<td align="center"></td>
+	</tr>
+	{% endif %}
+	{% endfor %}
+	</tr>
 		<tr>
+		<td></td>
 		<td></td>
 		<td></td>
 		<td>_____</td>
@@ -81,6 +126,7 @@ Listado Periodo Contable
 	</tr>
 	<tr>
 	{% for resultados in resultado %}
+	<td></td>
 	<td>Total</td>
 	<td></td>
 	<td align="center">{{resultados.debe}}</td>
@@ -88,21 +134,53 @@ Listado Periodo Contable
 	{% endfor %}
 	</tr>
 
-	<tr>
 	{% for resultados in resultado%}
 		{% if resultados.haber > resultados.debe%}
-		<td>Utilidad</td>
+		<tr>
+			<td>Utilidades:</td>
+		</tr>
+		<tr>
+		<td>Utilidad Bruta:</td>
 		<td>{{resultados.utilidades}}</td>
+		</tr>
+		<tr>
+			{% for reserva in capital%}
+			{% if reserva.saldoAcreedor != 0.00%}
+			<td>{{reserva.nombre}}</td>
+			<td>{{reserva.saldoAcreedor}}</td>
+			{% endif %}
+			{% endfor %}
+		</tr>
+		<tr>
+			{% for impuesto in impuestoRenta %}
+			{% if impuesto.saldoDeudor != 0.00%}
+			<td>{{impuesto.nombre}}</td>
+			<td>{{impuesto.saldoDeudor}}</td>
+			{% endif %}
+			{% endfor %}
+		</tr>
+		<tr>
+		<td>Utilidad Neta:</td>
+		<td>{{resultados.utilidadNeta}}</td>
+		</tr>
+
 		{% endif %}
+
 		{% if resultados.haber < resultados.debe%}
-		<td>Perdida</td>
+		<tr>
+		<td>Utilidades:</td>
+		<td>Perdida:</td>
 		<td>({{resultados.utilidades}})</td>
+		</tr>
 		{% endif%}
+
 		{% if resultados.haber == resultados.debe %}
+		<tr>
+		<td>Utilidades</td>
 		<td>No existe Utilidad ni Perdida</td>
+		</tr>
 		{% endif %}
-	</tr>
-	{% endfor%}
+		{% endfor%}
 	</table>
 </div>
 {% endblock content %}

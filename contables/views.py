@@ -6,6 +6,7 @@ from .models import PeriodoContable,Transaccion,Cuenta,detalleTransaccion,estado
 from myauth.models import  MyUser
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
+from django.db.models import Max,Count
 # Create your views here.
 @login_required
 def index(request):
@@ -190,6 +191,9 @@ def balancesComprobacion(request,periodoId):
 def estadosResultado(request,periodoId):
 	cuentasResultadoDeudor = Cuenta.objects.filter(descripcion__iexact='Costo de Venta')
 	cuentasResultadoAcreedor = Cuenta.objects.filter(descripcion__iexact='Ingreso')
+	cuentasResultadoDeudorAdministracion = Cuenta.objects.filter(descripcion__iexact='Gastos de Administracion')
+	cuentasResultadoDeudorFinanciero = Cuenta.objects.filter(descripcion__iexact='Gastos Financieros')
+	cuentasResultadoDeudorVenta = Cuenta.objects.filter(descripcion__iexact='Gasto de Venta')
 	transaccion = Transaccion.objects.filter(id_periodoContable=periodoId)
 	detalles = detalleTransaccion.objects.all()
 	result=estadoResulta.objects.all()
@@ -200,6 +204,8 @@ def estadosResultado(request,periodoId):
 	estadoRes.haber=float(0.00)
 	estadoRes.utilidades=float(0.00)
 	estadoRes.save()
+	reservaLegal=Cuenta.objects.filter(descripcion__iexact='Reserva Legal')
+	impuesto=Cuenta.objects.filter(nombre__iexact='Impuesto sobre Renta')
 
 	for cuenta in cuentasResultadoDeudor:
 		cuentaSet=Cuenta.objects.get(id=cuenta.id)
@@ -242,15 +248,90 @@ def estadosResultado(request,periodoId):
 		estadoRes.utilidades=float(estadoRes.utilidades)-float(cuentaParcial.saldoDeudor)
 		estadoRes.save()
 		debeParcial=0.00
-	
+
+	for cuenta in cuentasResultadoDeudorAdministracion:
+		cuentaParcial = Cuenta.objects.get(id=cuenta.id)
+		estadoRes = estadoResulta.objects.get(id=1)
+		for transacciones in transaccion:
+			for detalle in detalles:
+				if detalle.id_cuenta_id ==cuenta.id:
+					if detalle.id_Transaccion_id==transacciones.id_Transaccion:
+						debeParcial=float(debeParcial)+float(detalle.debe)
+		cuentaParcial.saldoDeudor=float(debeParcial)
+		cuentaParcial.save()
+		estadoRes.debe=float(estadoRes.debe)+ float(cuentaParcial.saldoDeudor)
+		estadoRes.utilidades=float(estadoRes.utilidades)-float(cuentaParcial.saldoDeudor)
+		estadoRes.save()
+		debeParcial=0.00
+
+	for cuenta in cuentasResultadoDeudorFinanciero:
+		cuentaParcial = Cuenta.objects.get(id=cuenta.id)
+		estadoRes = estadoResulta.objects.get(id=1)
+		for transacciones in transaccion:
+			for detalle in detalles:
+				if detalle.id_cuenta_id ==cuenta.id:
+					if detalle.id_Transaccion_id==transacciones.id_Transaccion:
+						debeParcial=float(debeParcial)+float(detalle.debe)
+		cuentaParcial.saldoDeudor=float(debeParcial)
+		cuentaParcial.save()
+		estadoRes.debe=float(estadoRes.debe)+ float(cuentaParcial.saldoDeudor)
+		estadoRes.utilidades=float(estadoRes.utilidades)-float(cuentaParcial.saldoDeudor)
+		estadoRes.save()
+		debeParcial=0.00
+
+	for cuenta in cuentasResultadoDeudorVenta:
+		cuentaParcial = Cuenta.objects.get(id=cuenta.id)
+		estadoRes = estadoResulta.objects.get(id=1)
+		for transacciones in transaccion:
+			for detalle in detalles:
+				if detalle.id_cuenta_id ==cuenta.id:
+					if detalle.id_Transaccion_id==transacciones.id_Transaccion:
+						debeParcial=float(debeParcial)+float(detalle.debe)
+		cuentaParcial.saldoDeudor=float(debeParcial)
+		cuentaParcial.save()
+		estadoRes.debe=float(estadoRes.debe)+ float(cuentaParcial.saldoDeudor)
+		estadoRes.utilidades=float(estadoRes.utilidades)-float(cuentaParcial.saldoDeudor)
+		estadoRes.save()
+		debeParcial=0.00
+
+	for cuenta in reservaLegal:
+		cuentaParcial = Cuenta.objects.get(id=cuenta.id)
+		estadoRes = estadoResulta.objects.get(id=1)
+		for transacciones in transaccion:
+			for detalle in detalles:
+				if detalle.id_cuenta_id ==cuenta.id:
+					if detalle.id_Transaccion_id==transacciones.id_Transaccion:
+						haberParcial=float(haberParcial)+float(detalle.haber)
+		cuentaParcial.saldoAcreedor=float(haberParcial)
+		cuentaParcial.save()
+		estadoRes.utilidadNeta=float(estadoRes.utilidades)-float(cuentaParcial.saldoAcreedor)
+		estadoRes.save()
+
+	for cuenta in impuesto:
+		cuentaParcial = Cuenta.objects.get(id=cuenta.id)
+		estadoRes = estadoResulta.objects.get(id=1)
+		for transacciones in transaccion:
+			for detalle in detalles:
+				if detalle.id_cuenta_id ==cuenta.id:
+					if detalle.id_Transaccion_id==transacciones.id_Transaccion:
+						debeParcial=float(debeParcial)+float(detalle.debe)
+		cuentaParcial.saldoDeudor=float(debeParcial)
+		cuentaParcial.save()
+		estadoRes.utilidadNeta=float(estadoRes.utilidadNeta)-float(cuentaParcial.saldoDeudor)
+		estadoRes.save()
 
 	cuentasResultadoDeudor = Cuenta.objects.filter(descripcion__iexact='Costo de Venta')
 	cuentasResultadoAcreedor = Cuenta.objects.filter(descripcion__iexact='Ingreso')
+	cuentasResultadoDeudorAdministracion = Cuenta.objects.filter(descripcion__iexact='Gastos de Administracion')
+	cuentasResultadoDeudorFinanciero = Cuenta.objects.filter(descripcion__iexact='Gastos Financieros')
+	cuentasResultadoDeudorVenta = Cuenta.objects.filter(descripcion__iexact='Gasto de Venta')
 	transaccion = Transaccion.objects.filter(id_periodoContable=periodoId)
 	detalles = detalleTransaccion.objects.all()
 	estado = estadoResulta.objects.all()
+ 	reservaLegal=Cuenta.objects.filter(descripcion__iexact='Reserva Legal')
+ 	impuesto=Cuenta.objects.filter(nombre__iexact='Impuesto sobre Renta')
 
-	return render(request, 'contables/estadoResultado.html', {'Gasto':cuentasResultadoDeudor,'resultado':estado,'Ingreso':cuentasResultadoAcreedor})
+	return render(request, 'contables/estadoResultado.html', {'impuestoRenta':impuesto,'capital':reservaLegal,'Gasto':cuentasResultadoDeudor,'Gasto2':cuentasResultadoDeudorAdministracion,'Gasto3':cuentasResultadoDeudorFinanciero,'Gasto4':cuentasResultadoDeudorVenta,'resultado':estado,'Ingreso':cuentasResultadoAcreedor})
 
 @login_required
 def historialCuenta(request,periodoId):
@@ -298,6 +379,7 @@ def agregarCuentaHija(request,cuentaId):
 def modificarCuenta(request,cuentaId):
 	cuentaid=cuentaId
 	cuentas = Cuenta.objects.filter(id=cuentaId)
+	maximo =Transaccion.objects.all().aggregate(Max('id_Transaccion'))
 
 	if request.method == 'POST':
 		periodo=PeriodoContable.objects.all()

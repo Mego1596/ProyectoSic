@@ -65,3 +65,4 @@ class estadoResulta(models.Model):
 	debe =models.DecimalField('debe', max_digits=50, decimal_places=2, blank=False, null=True, validators=[MinValueValidator(0)])
 	haber= models.DecimalField('haber', max_digits=50, decimal_places=2, blank=False, null=True, validators=[MinValueValidator(0)])
 	utilidades=models.DecimalField('Utilildad', max_digits=50, decimal_places=2, blank=False, null=True, validators=[MinValueValidator(0)])
+	utilidadNeta=models.DecimalField('Utilildad', max_digits=50, decimal_places=2, blank=False, null=True, validators=[MinValueValidator(0)])
