@@ -23,6 +23,18 @@
         });
     });
 </script>
+<script>
+window.onload = function() {
+  var x = document.getElementsByName("idtrans")[0].value;
+  if(x != 'None'){
+  var z = parseInt(x)+parseInt(1)
+  document.getElementsByName("idtrans")[0].value=z
+  }
+  else{
+  document.getElementsByName("idtrans")[0].value=1
+  }
+};
+</script>
 {% endblock head %}
 
 {% block content %}
@@ -140,6 +152,9 @@
              <div class="row">
               <input class="btn btn-primary" type="submit" name="enviar" id="enviar" value="Guardar">
              </div>
+             <div class="col-4">
+                <input class="form-control" type="hidden" id="idtrans" name="idtrans" value="{{max.id_Transaccion__max}}">
+              </div>
           </form>
         </div>
       </div>

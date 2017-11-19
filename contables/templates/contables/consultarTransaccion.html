@@ -97,12 +97,15 @@
             </thead>
             <tbody>
             	{% for trans in transacciones%}
+  						{% if trans.is_inicial == False %}
   						<tr>
 						    <td>{{trans.descripcion}}</td>
 						    <td>{{trans.fecha}}</td>
 						    <td><a href="/detalleAfectado/{{periodoId}}/{{trans.id_Transaccion}}">Ver Detalles</a></td>
 						  </tr>
+						{% endif %}
 						  {% endfor %}
+						
             </tbody>
           </table>
 				</div>

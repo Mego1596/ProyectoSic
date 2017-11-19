@@ -80,7 +80,8 @@ def nuevaTransaccion(request,periodoId):
 			Transaccion.objects.create(
 				descripcion=request.POST['descripcion'],
 				fecha=request.POST['fechaTransaccion'],
-				id_periodoContable= PeriodoContable.objects.get(id_periodoContable=request.POST['periodo'])
+				id_periodoContable= PeriodoContable.objects.get(id_periodoContable=request.POST['periodo']),
+				is_inicial = False,
 			)
 			return HttpResponse('No se almacenaron los datos')
 	return render(request,'contables/ingresarTransaccion.html',{'periodoId':periodo})
@@ -385,7 +386,7 @@ def modificarCuenta(request,cuentaId):
 		periodo=PeriodoContable.objects.all()
 		for  periodos in periodo:
 			if periodos.estadoPeriodo == True:
-				transaccion=Transaccion.objects.filter(id_periodoContable=periodos.id_periodoContable	)
+				transaccion=Transaccion.objects.filter(id_periodoContable=periodos.id_periodoContable,is_inicial=False)
 				tamano = len(transaccion)
 				if tamano == 0:
 					cuentaParcial = Cuenta.objects.get(id=request.POST['idCuenta'])
@@ -395,6 +396,18 @@ def modificarCuenta(request,cuentaId):
 					cuentaParcial.debe= request.POST['debeCuenta']
 					cuentaParcial.haber= request.POST['haberCuenta']
 					cuentaParcial.save()
+					Transaccion.objects.create(
+						descripcion='Inicio',
+						fecha=periodos.fechaInicio,
+						id_periodoContable=PeriodoContable.objects.get(id_periodoContable=periodos.id_periodoContable),
+						is_inicial=True,
+						)
+					detalleTransaccion.objects.create(
+						debe =request.POST['debeCuenta'],
+						haber =request.POST['haberCuenta'],
+						id_Transaccion =Transaccion.objects.get(id_Transaccion=request.POST['idtrans']),
+						id_cuenta =Cuenta.objects.get(id=request.POST['idCuenta']),
+						)
 				else:
 					print('ya hay transacciones solo puede modificar el nombre y descripcion')
 					cuentaParcial = Cuenta.objects.get(id=request.POST['idCuenta'])
@@ -403,7 +416,7 @@ def modificarCuenta(request,cuentaId):
 					cuentaParcial.descripcion= request.POST['descripcionCuenta']
 					cuentaParcial.save()
 
-	return render (request, 'contables/modificarCuenta.html',{'cuenta':cuentas})
+	return render (request, 'contables/modificarCuenta.html',{'cuenta':cuentas,'max':maximo})
 
 
 def contabilidadGeneral(request,periodoId):

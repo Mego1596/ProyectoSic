@@ -17,6 +17,7 @@ class Transaccion(models.Model):
 	descripcion = models.CharField(max_length = 256)
 	fecha = models.DateField('Fecha de Transaccion', help_text='Formato: AAAA/MM/DD', blank=False, null=False)
 	id_periodoContable = models.ForeignKey(PeriodoContable, null=True, blank=True,on_delete= models.CASCADE)
+	is_inicial= models.NullBooleanField(null = True);
 	def __str__(self):
 		return '{}{}'.format(self.id_Transaccion,self.descripcion, self.fecha,self.id_periodoContable)
 

@@ -103,6 +103,7 @@
               <tbody>
                 {% for trans in transacciones%}
                 <tr>
+                {% if trans.is_inicial == False%}
                   <td>{{trans.descripcion}}</td>
                   <td>{{trans.fecha}}</td>
                   {% for periodo in periodos %}
@@ -111,6 +112,7 @@
                   {% endif %}
                   {% endfor %}
                 </tr>
+                {% endif %}
                 {% endfor %}
               </tbody>
             </table>
