@@ -82,29 +82,35 @@
         <div class="card-header">
           <i class="fa fa-list"></i> Contabilidad general  
         </div>
-        <div class="card-body">
-          <ul>
-            <li>
-              <a href="/consulta/{{periodoId}}" role="button" class="button btn btn-primary">Consultar Transacciones</a>
-            </li>
-            <li>
-              <a href="/transaccion/{{periodoId}}" role="button" class="btn btn-primary">Ingresar Transaccion</a>
-            </li>
-            <li>
-              <a href="/generador/{{periodoId}}" role="button" class="btn btn-primary">Generar Estados Financieros</a>
-            </li>
-            <li>
-              <a href="/historial/{{periodoId}}" role="button" class="btn btn-primary">Historial de cuentas</a>
-            </li>
-            <li>
-              <a href="/periodoConta/" role="button" class="btn btn-secondary">Regresar</a>
-            </li>
-          </ul>
+        <div class="card-body container">
+          <div class="row">
+            <div class="col-4">
+              <a href="/consulta/{{periodoId}}"  class="button btn btn-block btn-primary" style="margin-left: 100%;">Consultar Transacciones</a>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-4">
+              <a href="/transaccion/{{periodoId}}" class="btn btn-block btn-primary" style="margin-top: 5px; margin-left: 100%;">Ingresar Transaccion</a>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-4">
+              <a href="/generador/{{periodoId}}" class="btn btn-block btn-primary" style="margin-top: 5px; margin-left: 100%;">Generar Estados Financieros</a>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-4">
+              <a href="/historial/{{periodoId}}" class="btn btn-block btn-primary" style="margin-top: 5px; margin-left: 100%;">Historial de cuentas</a>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-4">
+              <a href="/periodoConta/" class="btn btn-block btn-secondary" style="margin-top: 5px; margin-left: 100%;">Regresar</a>
+            </div>
+          </div>
         </div>
       </div>
   	</div>
-    
-
   <!-- /.content-wrapper-->
     <footer class="sticky-footer">
       <div class="container">
@@ -135,20 +141,6 @@
         </div>
       </div>
     </div>
-    <!-- Bootstrap core JavaScript-->
-    <script src="vendor/jquery/jquery.min.js"></script>
-    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-    <!-- Core plugin JavaScript-->
-    <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
-    <!-- Page level plugin JavaScript-->
-    <script src="vendor/chart.js/Chart.min.js"></script>
-    <script src="vendor/datatables/jquery.dataTables.js"></script>
-    <script src="vendor/datatables/dataTables.bootstrap4.js"></script>
-    <!-- Custom scripts for all pages-->
-    <script src="js/sb-admin.min.js"></script>
-    <!-- Custom scripts for this page-->
-    <script src="js/sb-admin-datatables.min.js"></script>
-    <script src="js/sb-admin-charts.min.js"></script>
   </div>
 </body>
 {% endblock content %}

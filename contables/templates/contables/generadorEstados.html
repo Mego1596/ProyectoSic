@@ -82,29 +82,40 @@
         <div class="card-header">
           <i class="fa fa-list"></i> Estados financieros  
         </div>
-        <div class="card-body">
-          <ul>
-            <li>
-              <a href="/balanceComprobacion/{{periodoId}}" role="button" class="button btn btn-primary">Balance de comprobacion</a>
-            </li>
-            <li>
-              <a href="/estadoResultado/{{periodoId}}" role="button" class="btn btn-primary">Estado de resultados</a>
-            </li>
-            <li>
-              <a href="#" role="button" class="btn btn-primary">Estado de Capital</a>
-            </li>
-            <li>
-              <a href="#" role="button" class="btn btn-primary">Balance general</a>
-            </li>
-            <li>
-              <a href="/contabilidadGeneral/{{periodoId}}" role="button" class="btn btn-secondary">Regresar</a>
-            </li>
-          </ul>
+        <div class="card-body container">
+          <div class="row">
+            <div class="col-4">
+              <a href="/balanceComprobacion/{{periodoId}}" class="btn btn-block btn-primary" style="margin-left: 100%;">Balance de comprobacion</a>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-4">
+              <a href="/balanceComprobacion/{{periodoId}}" class="btn btn-block btn-primary" style="margin-top: 5px; margin-left: 100%;">Balance de comprobacion</a>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-4">
+              <a href="/estadoResultado/{{periodoId}}" class="btn btn-block btn-primary" style="margin-top: 5px; margin-left: 100%;">Estado de resultados</a>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-4">
+              <a href="#" class="btn btn-block btn-primary" style="margin-top: 5px; margin-left: 100%;">Estado de Capital</a>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-4">
+              <a href="#" class="btn btn-block btn-primary" style="margin-top: 5px; margin-left: 100%;">Balance general</a>
+            </div>
+          </div> 
+          <div class="row">
+            <div class="col-4">
+              <a href="/contabilidadGeneral/{{periodoId}}" class="btn btn-block btn-secondary" style="margin-top: 5px; margin-left: 100%;">Regresar</a>
+            </div>
+          </div>
         </div>
       </div>
   	</div>
-    
-
   <!-- /.content-wrapper-->
     <footer class="sticky-footer">
       <div class="container">
@@ -135,20 +146,6 @@
         </div>
       </div>
     </div>
-    <!-- Bootstrap core JavaScript-->
-    <script src="vendor/jquery/jquery.min.js"></script>
-    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-    <!-- Core plugin JavaScript-->
-    <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
-    <!-- Page level plugin JavaScript-->
-    <script src="vendor/chart.js/Chart.min.js"></script>
-    <script src="vendor/datatables/jquery.dataTables.js"></script>
-    <script src="vendor/datatables/dataTables.bootstrap4.js"></script>
-    <!-- Custom scripts for all pages-->
-    <script src="js/sb-admin.min.js"></script>
-    <!-- Custom scripts for this page-->
-    <script src="js/sb-admin-datatables.min.js"></script>
-    <script src="js/sb-admin-charts.min.js"></script>
   </div>
 </body>
 {% endblock content %}
