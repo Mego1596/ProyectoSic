@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 from django.http import HttpResponse
 from django.shortcuts import render,redirect
-from .models import PeriodoContable,Transaccion,Cuenta,detalleTransaccion,estadoComprobacion,estadoResulta
+from .models import PeriodoContable,Transaccion,Cuenta,detalleTransaccion,estadoComprobacion,estadoResulta,estadoCapital
 from myauth.models import  MyUser
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
@@ -17,17 +17,19 @@ def index(request):
 def periodoConta(request):
 	periodo = PeriodoContable.objects.all()
 	cantidad= int(0)
-	print(cantidad)
-	for periodos in periodo:
-		if periodos.estadoPeriodo == True:
-			cantidad= int(cantidad)+1
-			print(cantidad)
 
 	if request.method == 'POST':
 		periodoParcial = PeriodoContable.objects.get(id_periodoContable=request.POST['idperiodo'])
 		periodoParcial.estadoPeriodo = False
 		periodoParcial.save()
-	
+		for periodos in periodo:
+			if periodos.estadoPeriodo == True:
+				cantidad= int(cantidad)+1
+	else:
+		for periodos in periodo:
+			if periodos.estadoPeriodo == True:
+				cantidad= int(cantidad)+1
+				
 	periodo = PeriodoContable.objects.all()
 
 	return render(request, 'contables/periodoContable.html',{'periodoCont':periodo,'cant':cantidad})
@@ -334,6 +336,89 @@ def estadosResultado(request,periodoId):
 
 	return render(request, 'contables/estadoResultado.html', {'impuestoRenta':impuesto,'capital':reservaLegal,'Gasto':cuentasResultadoDeudor,'Gasto2':cuentasResultadoDeudorAdministracion,'Gasto3':cuentasResultadoDeudorFinanciero,'Gasto4':cuentasResultadoDeudorVenta,'resultado':estado,'Ingreso':cuentasResultadoAcreedor})
 
+
+def estadoCapita(request,periodoId):
+	inversiones = Cuenta.objects.filter(descripcion__iexact='Inversion')
+	desinversiones = Cuenta.objects.filter(descripcion__iexact='Desinversion')
+	transaccion = Transaccion.objects.filter(id_periodoContable=periodoId)
+	detalles = detalleTransaccion.objects.all()
+	estadoCa = estadoCapital.objects.all()
+	haberParcial= float(0.00)
+	debeParcial= float(0.00)
+	estadoCapi = estadoCapital.objects.get(id=1)
+	estadoCapi.debe= float(0.00)
+	estadoCapi.haber=float(0.00)
+	estadoCapi.capitalContable=float(0.00)
+	estadoCapi.UtilidadesRetenidas=float(0.00)
+	estadoCapi.save()
+
+	for cuenta in inversiones:
+		cuentaSet=Cuenta.objects.get(id=cuenta.id)
+		cuentaSet.saldoDeudor=0.00
+		cuentaSet.saldoAcreedor=0.00
+		cuentaSet.save()
+	for cuenta in desinversiones:
+		cuentaSet=Cuenta.objects.get(id=cuenta.id)
+		cuentaSet.saldoDeudor=0.00
+		cuentaSet.saldoAcreedor=0.00
+		cuentaSet.save()
+
+	for cuenta in inversiones:
+		cuentaParcial = Cuenta.objects.get(id=cuenta.id)
+		estadoCapi= estadoCapital.objects.get(id=1)
+		estadoRes = estadoResulta.objects.get(id=1)
+		for transacciones in transaccion:
+			for detalle in detalles:
+				if detalle.id_cuenta_id ==cuenta.id:
+					if detalle.id_Transaccion_id==transacciones.id_Transaccion:
+						haberParcial=float(haberParcial)+float(detalle.haber)
+		cuentaParcial.saldoAcreedor=float(haberParcial)
+		cuentaParcial.save()
+		estadoCapi.haber=float(estadoCapi.haber)+ float(cuentaParcial.saldoAcreedor)
+		estadoRes.save()
+		haberParcial=0.00
+	if estadoRes.utilidadNeta >=0.00:
+		estadoCapi.haber= float(estadoCapi.haber)+float(estadoRes.utilidadNeta)*float(1.00)
+		estadoCapi.capitalContable= float(estadoCapi.capitalContable)+float(estadoCapi.haber)
+		estadoCapi.UtilidadRetenida=float(estadoRes.utilidadNeta)-float(estadoRes.utilidadNeta)*float(1.00)
+		estadoCapi.save()
+	else:
+		estadoCapi.haber=float(estadoCapi.haber)
+		estadoCapi.capitalContable=float(estadoCapi.capitalContable)+float(estadoCapi.haber)
+		estadoCapi.save()
+
+
+	for cuenta in desinversiones:
+		cuentaParcial = Cuenta.objects.get(id=cuenta.id)
+		estadoCapi = estadoCapital.objects.get(id=1)
+		estadoRes = estadoResulta.objects.get(id=1)
+		for transacciones in transaccion:
+			for detalle in detalles:
+				if detalle.id_cuenta_id ==cuenta.id:
+					if detalle.id_Transaccion_id==transacciones.id_Transaccion:
+						debeParcial=float(debeParcial)+float(detalle.debe)
+		cuentaParcial.saldoDeudor=float(debeParcial)
+		cuentaParcial.save()
+		estadoCapi.debe=float(estadoCapi.debe)+ float(cuentaParcial.saldoDeudor)
+		estadoCapi.save()
+		debeParcial=0.00
+	if estadoRes.utilidadNeta < 0.00:
+		estadoCapi.debe=float(estadoCapi.debe)-float(estadoRes.utilidadNeta)
+		estadoCapi.capitalContable=float(estadoCapi.capitalContable)-float(estadoCapi.debe)
+		estadoCapi.UtilidadRetenida=float(0.00)
+		estadoCapi.save()
+	else:
+		estadoCapi.debe=float(estadoCapi.debe)
+		estadoCapi.capitalContable=float(estadoCapi.capitalContable)-float(estadoCapi.debe)
+		estadoCapi.save()
+
+	inversiones = Cuenta.objects.filter(descripcion__iexact='Inversion')
+	desinversiones = Cuenta.objects.filter(descripcion__iexact='Desinversion')
+	transaccion = Transaccion.objects.filter(id_periodoContable=periodoId)
+	detalles = detalleTransaccion.objects.all()
+	estadoCa = estadoCapital.objects.all()
+	estado = estadoResulta.objects.all()
+	return render(request,'contables/estadoCapital.html',{'utilidades':estado,'capitalContable':estadoCa,'inver':inversiones,'desinver':desinversiones})
 @login_required
 def historialCuenta(request,periodoId):
 	cuentas = Cuenta.objects.all()

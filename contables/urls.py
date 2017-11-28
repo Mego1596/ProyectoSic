@@ -21,4 +21,5 @@ urlpatterns = [
     url(r'^modificarCuenta/(?P<cuentaId>\d+)/$', views.modificarCuenta),
     url(r'^contabilidadGeneral/(?P<periodoId>\d+)/$', views.contabilidadGeneral),
     url(r'^estadoResultado/(?P<periodoId>\d+)/$', views.estadosResultado),
+    url(r'^estadoCapital/(?P<periodoId>\d+)/$', views.estadoCapita),
 ]

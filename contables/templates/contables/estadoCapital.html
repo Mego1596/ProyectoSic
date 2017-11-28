@@ -1,0 +1,131 @@
+{% extends 'base.html' %}
+{% block content%}
+<table>
+	
+	<tr>
+		<td>Inversiones:</td>
+	</tr>
+	<tr>
+		<td align="center">Cuenta:</td>
+		<td align="center">Descripcion</td>
+		<td align="center">Total</td>
+	</tr>
+	<tr>
+		{% for inversiones in inver%}
+		<td align="center">{{inversiones.nombre}}</td>
+		<td align="center">{{inversiones.descripcion}}</td>
+		<td align="center">{{inversiones.saldoAcreedor}}</td>
+	</tr>
+	   {% endfor %}	
+	
+		<tr>
+        {% for util in utilidades%}
+        {% if util.utilidadNeta >= 0.00%}
+        <td align="center">Utilidades</td>
+        <td align="center">Retenidas</td>
+        <td align="center">{{util.utilidadNeta}}</td>
+    </tr>
+    {% endif %}
+    {% endfor %}
+	<tr>
+        <td></td>
+        <td></td>
+        <td align="center">_____</td>
+    </tr>
+
+    <tr>
+    {% for cap in capitalContable%}
+    	<td>Total</td>
+    	<td></td>
+    	<td align="center">{{cap.haber}}</td>
+    </tr>
+    {% endfor %}
+    <tr>
+    	<td>Desinversiones:</td>
+    </tr>
+    <tr>
+    	<td align="center">Cuenta:</td>
+		<td align="center">Descripcion</td>
+		<td align="center">Total</td>
+    </tr>
+    <tr>
+    	{% for desinversiones in desinver %}
+		<td align="center">{{desinversiones.nombre}}</td>
+		<td align="center">{{desinversiones.descripcion}}</td>
+		<td align="center">{{desinversiones.saldoDeudor}}</td>
+		</tr>
+        {% endfor %}
+
+    <tr>
+		{% for util in utilidades%}
+        {% if util.utilidadNeta < 0.00%}
+		<td align="center">Utilidades</td>
+		<td align="center">Retenidas</td>
+		<td align="center">{{util.utilidadNeta}}</td>
+	</tr>
+    {% endif %}
+    {% endfor %}
+	<tr>
+        <td></td>
+        <td></td>
+        <td align="center">_____</td>
+    </tr>
+
+    <tr>
+        {% for cap in capitalContable%}
+    	<td>Total</td>
+    	<td></td>
+    	<td align="center">{{cap.debe}}</td>
+    </tr>
+    {% endfor %}
+    <tr>
+    <td></td>
+    <td></td>
+    <td></td>
+    </tr>
+    <tr>
+    <td></td>
+    <td></td>
+    <td></td>
+    </tr>
+    <tr>
+    <td></td>
+    <td></td>
+    <td></td>
+    </tr>
+    <tr>
+    <td></td>
+    <td></td>
+    <td></td>
+    </tr>
+    <tr>
+    <td></td>
+    <td></td>
+    <td></td>
+    </tr>
+    <tr>
+    <td></td>
+    <td></td>
+    <td></td>
+    </tr>
+    <tr>
+    <td></td>
+    <td></td>
+    <td></td>
+    </tr>
+    <tr>   
+        {% for capital in capitalContable %}
+    	<td>Capital Contable:</td>
+    	<td>{{capital.capitalContable}}</td>
+    </tr>
+        {% endfor %}
+    	
+    <tr>
+        {% for capital in capitalContable%}
+    	<td>Utilidad Retenida:</td>
+    	<td>{{capital.UtilidadRetenida}}</td>
+    </tr>
+    	{% endfor %}
+</table>
+
+{% endblock content %}
