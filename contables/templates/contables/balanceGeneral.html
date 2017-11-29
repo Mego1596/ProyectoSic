@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+{% block content%}
+
+<table>
+	<tr>
+		<td>
+			<table>
+				<tr>
+					<td><h3>Activos Corrientes:</h3></td>
+				</tr>
+				<tr>
+					<td>Cuenta</td>
+					<td>Total</td>
+				</tr>
+				<tr>
+					{% for activo in activos%}
+					<td>{{activo.nombre}}</td>
+					<td>{{activo.saldoDeudor}}</td>
+				</tr>
+				{% endfor %}
+				<tr>
+					<td></td>
+        			<td>_____</td>
+    			</tr>
+    			<tr>
+    				{% for cap in estadoGral%}
+    				<td>Total</td>
+    				<td>{{cap.debe}}</td>
+    				</tr>
+    				{% endfor %}
+			</table>
+		</td>
+		<td>
+			<table>
+				<tr>
+					<td><h3>Pasivos Corrientes:</h3></td>
+				</tr>
+				<tr>
+					<td>Cuenta</td>
+					<td>Total</td>
+				</tr>
+				<tr>
+					{% for pasivo in pasivos%}
+					<td>{{pasivo.nombre}}</td>
+					<td>{{pasivo.saldoAcreedor}}</td>
+				</tr>
+				{% endfor %}
+				<tr>
+					<td><h3>Capital:</h3></td>
+				</tr>
+				<tr>
+					<td>Cuenta</td>
+					<td>Total</td>
+				</tr>
+				<tr>
+					{% for capital in cap %}
+					<td>Capital</td>
+					<td>{{capital.capitalContable}}</td>
+				</tr>
+					{% endfor %}
+				<tr>
+					{% for capital in cap %}
+					<td>Utilidades Retenidas</td>
+					<td>{{capital.UtilidadRetenida}}</td>
+				</tr>
+					{% endfor %}
+				<tr>
+					<td></td>
+        			<td>_____</td>
+    			</tr>
+    			<tr>
+    				{% for cap in estadoGral%}
+    				<td>Total</td>
+    				<td>{{cap.haber}}</td>
+    				</tr>
+    				{% endfor %}
+			</table>
+		</td>
+	</tr>
+</table>
+{% endblock content %}

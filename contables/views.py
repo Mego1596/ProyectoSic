@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 from django.http import HttpResponse
 from django.shortcuts import render,redirect
-from .models import PeriodoContable,Transaccion,Cuenta,detalleTransaccion,estadoComprobacion,estadoResulta,estadoCapital
+from .models import PeriodoContable,Transaccion,Cuenta,detalleTransaccion,estadoComprobacion,estadoResulta,estadoCapital,balanceGeneral
 from myauth.models import  MyUser
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
@@ -336,7 +336,7 @@ def estadosResultado(request,periodoId):
 
 	return render(request, 'contables/estadoResultado.html', {'impuestoRenta':impuesto,'capital':reservaLegal,'Gasto':cuentasResultadoDeudor,'Gasto2':cuentasResultadoDeudorAdministracion,'Gasto3':cuentasResultadoDeudorFinanciero,'Gasto4':cuentasResultadoDeudorVenta,'resultado':estado,'Ingreso':cuentasResultadoAcreedor})
 
-
+@login_required
 def estadoCapita(request,periodoId):
 	inversiones = Cuenta.objects.filter(descripcion__iexact='Inversion')
 	desinversiones = Cuenta.objects.filter(descripcion__iexact='Desinversion')
@@ -349,7 +349,7 @@ def estadoCapita(request,periodoId):
 	estadoCapi.debe= float(0.00)
 	estadoCapi.haber=float(0.00)
 	estadoCapi.capitalContable=float(0.00)
-	estadoCapi.UtilidadesRetenidas=float(0.00)
+	estadoCapi.UtilidadRetenida=float(0.00)
 	estadoCapi.save()
 
 	for cuenta in inversiones:
@@ -378,10 +378,11 @@ def estadoCapita(request,periodoId):
 		estadoRes.save()
 		haberParcial=0.00
 	if estadoRes.utilidadNeta >=0.00:
-		estadoCapi.haber= float(estadoCapi.haber)+float(estadoRes.utilidadNeta)*float(1.00)
+		estadoCapi.haber= float(estadoCapi.haber)+float(estadoRes.utilidadNeta)*float(0.6)
 		estadoCapi.capitalContable= float(estadoCapi.capitalContable)+float(estadoCapi.haber)
-		estadoCapi.UtilidadRetenida=float(estadoRes.utilidadNeta)-float(estadoRes.utilidadNeta)*float(1.00)
+		estadoCapi.UtilidadRetenida=float(estadoRes.utilidadNeta)-float(estadoRes.utilidadNeta)*float(0.6)
 		estadoCapi.save()
+		Neta=float(estadoRes.utilidadNeta)*float(0.6)
 	else:
 		estadoCapi.haber=float(estadoCapi.haber)
 		estadoCapi.capitalContable=float(estadoCapi.capitalContable)+float(estadoCapi.haber)
@@ -418,7 +419,112 @@ def estadoCapita(request,periodoId):
 	detalles = detalleTransaccion.objects.all()
 	estadoCa = estadoCapital.objects.all()
 	estado = estadoResulta.objects.all()
-	return render(request,'contables/estadoCapital.html',{'utilidades':estado,'capitalContable':estadoCa,'inver':inversiones,'desinver':desinversiones})
+	return render(request,'contables/estadoCapital.html',{'neta':Neta,'utilidades':estado,'capitalContable':estadoCa,'inver':inversiones,'desinver':desinversiones})
+
+@login_required
+def balanceGral(request,periodoId):
+	activosCorrientes = Cuenta.objects.filter(codigo_dependiente__iexact=1)
+	pasivosCorrientes = Cuenta.objects.exclude(codigo=20104).filter(codigo_dependiente__iexact=2)
+	capitalContable = estadoCapital.objects.all()
+	estadoGeneral = balanceGeneral.objects.all()
+	transaccion = Transaccion.objects.filter(id_periodoContable=periodoId)
+	detalles = detalleTransaccion.objects.all()
+	estadoG = balanceGeneral.objects.get(id=1)
+	estadoG.debe=float(0.00)
+	estadoG.haber=float(0.00)
+	estadoG.save()
+	haberParcial= float(0.00)
+	debeParcial= float(0.00)
+	estadoCapi= estadoCapital.objects.get(id=1)
+
+
+	for cuenta in pasivosCorrientes:
+		cuentaSet=Cuenta.objects.get(id=cuenta.id)
+		cuentaSet.saldoDeudor=0.00
+		cuentaSet.saldoAcreedor=0.00
+		cuentaSet.save()
+
+	for cuenta in activosCorrientes:
+		cuentaSet=Cuenta.objects.get(id=cuenta.id)
+		cuentaSet.saldoDeudor=0.00
+		cuentaSet.saldoAcreedor=0.00
+		cuentaSet.save()
+
+	for cuenta in activosCorrientes:
+		cuentaParcial=Cuenta.objects.get(id=cuenta.id)
+		estadoG = balanceGeneral.objects.get(id=1)
+		for transacciones in transaccion:
+			for detalle in detalles:
+				if detalle.id_cuenta_id == cuenta.id:
+					if detalle.id_Transaccion_id == transacciones.id_Transaccion:
+						haberParcial=float(haberParcial) + float(detalle.haber)
+						debeParcial=float(debeParcial) + float(detalle.debe)
+		if haberParcial > debeParcial:
+			cuentaParcial.saldoAcreedor=float(haberParcial)-float(debeParcial)
+			cuentaParcial.save()
+			estadoG.haber=float(estadoG.haber)+float(cuentaParcial.saldoAcreedor)
+			estadoG.save()
+		if debeParcial > haberParcial:
+			print(haberParcial)
+			print(debeParcial)
+			cuentaParcial.saldoDeudor=float(debeParcial)-float(haberParcial)
+			cuentaParcial.save()			
+			estadoG.debe=float(estadoG.debe)+float(cuentaParcial.saldoDeudor)
+			estadoG.save()
+			print(estadoG.debe)
+		if debeParcial == haberParcial:
+			cuentaParcial.saldoAcreedor=0.00
+			cuentaParcial.saldoDeudor=0.00
+			cuentaParcial.save()
+			estadoG.debe=float(estadoG.debe)+float(cuentaParcial.saldoDeudor)
+			estadoG.haber=float(estadoG.haber)+float(cuentaParcial.saldoAcreedor)
+			estadoG.save()
+		haberParcial=0.00
+		debeParcial=0.00
+
+	for cuenta in pasivosCorrientes:
+		cuentaParcial=Cuenta.objects.get(id=cuenta.id)
+		estadoG = balanceGeneral.objects.get(id=1)
+		for transacciones in transaccion:
+			for detalle in detalles:
+				if detalle.id_cuenta_id == cuenta.id:
+					if detalle.id_Transaccion_id == transacciones.id_Transaccion:
+						haberParcial=float(haberParcial) + float(detalle.haber)
+						debeParcial=float(debeParcial) + float(detalle.debe)
+		if haberParcial > debeParcial:
+			cuentaParcial.saldoAcreedor=float(haberParcial)-float(debeParcial)
+			cuentaParcial.save()
+			estadoG.haber=float(estadoG.haber)+float(cuentaParcial.saldoAcreedor)
+			estadoG.save()
+		if debeParcial > haberParcial:
+			print(haberParcial)
+			print(debeParcial)
+			cuentaParcial.saldoDeudor=float(debeParcial)-float(haberParcial)
+			cuentaParcial.save()			
+			estadoG.debe=float(estadoG.debe)+float(cuentaParcial.saldoDeudor)
+			estadoG.save()
+			print(estadoG.debe)
+		if debeParcial == haberParcial:
+			cuentaParcial.saldoAcreedor=0.00
+			cuentaParcial.saldoDeudor=0.00
+			cuentaParcial.save()
+			estadoG.debe=float(estadoG.debe)+float(cuentaParcial.saldoDeudor)
+			estadoG.haber=float(estadoG.haber)+float(cuentaParcial.saldoAcreedor)
+			estadoG.save()
+		haberParcial=0.00
+		debeParcial=0.00
+	
+	estadoG.haber=float(estadoG.haber)+ float(estadoCapi.capitalContable)+float(estadoCapi.UtilidadRetenida)
+	estadoG.save()
+
+	activosCorrientes = Cuenta.objects.filter(codigo_dependiente__iexact=1)
+	pasivosCorrientes = Cuenta.objects.exclude(codigo=20104).filter(codigo_dependiente__iexact=2)
+	capitalContable = estadoCapital.objects.all()
+	estadoGeneral = balanceGeneral.objects.all()
+	transaccion = Transaccion.objects.filter(id_periodoContable=periodoId)
+	detalles = detalleTransaccion.objects.all()
+	return render(request,'contables/balanceGeneral.html', {'estadoGral':estadoGeneral,'cap':capitalContable,'activos':activosCorrientes,'pasivos':pasivosCorrientes})
+
 @login_required
 def historialCuenta(request,periodoId):
 	cuentas = Cuenta.objects.all()
