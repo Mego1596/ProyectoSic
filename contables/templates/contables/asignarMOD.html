@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% block head%}
+<script type="text/javascript"> 
+    $(document).ready(function() {
+        $('#enviar').click(function(e){
+            e.preventDefault();
+                var dataString = $('#form-control').serialize();
+
+
+            $.ajax({
+                type: "POST",
+                url: '',
+                data: dataString,
+                success: function(data) {
+                window.location.replace("");
+                }
+            });
+        });
+    });
+</script>
+{% endblock head%}
+{% block content %}
+<form id="form-control" method="POST">
+{% csrf_token %}
+<table>
+		<tr>
+			<td>Cantidad:</td>
+			<td>
+			<input type="number" name="cantidad">
+			</td>
+		</tr>
+	</tc>
+</table>
+<input type="submit" name="enviar" id="enviar" value="Guardar" class="btn btn-primary" style="margin-left: 41%">
+<a href="/gestionarOrden/{{ordenId}}">Regresar</a>
+</form>
+{% endblock content %}

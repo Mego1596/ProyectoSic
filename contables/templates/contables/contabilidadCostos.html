@@ -67,12 +67,15 @@
 	  <!-- Breadcrumbs -->
       <ol class="breadcrumb">
         <li class="breadcrumb-item">
-          <a href="/index">Inicio</a>
+         <a href="/index">Inicio</a>
         </li>
         <li class="breadcrumb-item">
           <a href="/periodoConta">Periodo Contable</a>
         </li>
-        <li class="breadcrumb-item active">Menu</li>
+        <li class="breadcrumb-item">
+          <a href="/menu/{{periodoId}}">Menu</a>
+        </li>
+        <li class="breadcrumb-item active">Contabilidad de Costos</li>
       </ol>
       <!-- Carta de contenido -->
       <div class="card mb-3">
@@ -81,20 +84,35 @@
         </div>
         <div class="card-body container">
           <div class="row">
-            <div class="col-4 col-offset-3">
-             <a href="/contabilidadGeneral/{{periodoId}}" class="btn btn-block btn-primary " style="margin-left: 100%;">Contabilidad general</a>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-4">
-              <a href="/contabilidadCostos/{{periodoId}}" class="btn btn-block btn-primary" style="margin-top: 5px; margin-left: 100%;">Contabilidad de costos</a>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-4">
-               <a href="/periodoConta" class="btn btn-block btn-secondary" style="margin-top: 5px; margin-left: 100%;">Regresar</a>
-            </div>
-          </div>
+		            <div class="col-4 col-offset-3">
+		             <a href="/manejoOrdenes/{{periodoId}}" class="btn btn-block btn-primary " style="margin-left: 100%;">Manejo de Ordenes</a>
+		            </div>
+		          </div>
+		          <div class="row">
+		            <div class="col-4 col-offset-3">
+		             <a href="/compraMP/{{periodoId}}" class="btn btn-block btn-primary " style="margin-top: 5px; margin-left: 100%;">Compra de Materia Prima</a>
+		            </div>
+		          </div>
+		          <div class="row">
+		            <div class="col-4 col-offset-3">
+		             <a href="/contratacion/{{periodoId}}" class="btn btn-block btn-primary " style="margin-top: 5px; margin-left: 100%;">Contratacion de Empleados</a>
+		            </div>
+		          </div>
+		          <div class="row">
+		            <div class="col-4 col-offset-3">
+		             <a href="/planillaGeneral/{{periodoId}}" class="btn btn-block btn-primary " style="margin-top: 5px; margin-left: 100%;">Planilla General</a>
+		            </div>
+		          </div>
+		          <div class="row">
+		            <div class="col-4 col-offset-3">
+		             <a href="/kardex/{{periodoId}}" class="btn btn-block btn-primary " style="margin-top: 5px; margin-left: 100%;">Manejo Kardex</a>
+		            </div>
+		          </div>
+		          <div class="row">
+		            <div class="col-4">
+		               <a href="/menu/{{periodoId}}" class="btn btn-block btn-secondary" style="margin-top: 5px; margin-left: 100%;">Regresar</a>
+		            </div>
+          		  </div>
         </div>
       </div>
   	</div>

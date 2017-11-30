@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{%  block content %}
+
+
+<div align="center">
+	<table>
+		<tr>
+			<td>Orden:</td>
+			{% for ord in orden%}
+			<td>{{ord.descripcion}}</td>
+		</tr>
+			{% endfor %}
+		<tr>
+			<td>
+				<a href="/asignarMP/{{ordenId}}">Asignar Materia Prima</a>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<a href="/asignarMOD/{{ordenId}}">Asignar Mano de Obra</a>
+			</td>
+		</tr>
+	</table>
+</div>
+
+
+{% endblock content %}

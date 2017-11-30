@@ -1,0 +1,64 @@
+{% extends 'base.html'%}
+{% block head%}
+<script type="text/javascript"> 
+    $(document).ready(function() {
+        $('#enviar').click(function(e){
+            e.preventDefault();
+                var dataString = $('#form-control').serialize();
+
+
+            $.ajax({
+                type: "POST",
+                url: '',
+                data: dataString,
+                success: function(data) {
+                window.location.replace("");
+                }
+            });
+        });
+    });
+</script>
+{% endblock head%}
+{% block content%}
+
+<div>
+<form id='form-control' method="POST">
+	{%csrf_token%}
+	<table>
+    <tc>
+        <tr>
+            <td>DUI:</td>
+            <td><input type="text" name="dui" placeholder="(sin guion)"></td>
+        </tr>
+	</tc>
+	<tc>
+    <tr>
+			<td>Nombres:</td>
+			<td><input type="text" name="nombres"></td>
+		</tr>
+	</tc>
+	<tc>
+    <tr>
+			<td>Apellidos: </td>
+			<td><input type="text" name="apellidos"></td>
+		</tr>
+		</tc>
+    <tc>
+        <tr>
+            <td>Puesto: </td>
+            <td><input type="text" name="puesto"></td>
+        </tr>
+    </tc>
+    <tc>
+        <tr>
+            <td>Fecha de Contratacion: </td>
+            <td><input type="date" name="fecha"></td>
+        </tr>
+    </tc>
+
+	</table>
+	<input type="submit" name="enviar" id="enviar" value="Guardar" class="btn btn-primary" style="margin-left: 41%">  
+</form>
+</div>
+
+{% endblock content%}

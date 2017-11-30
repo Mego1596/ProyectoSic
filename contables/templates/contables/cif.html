@@ -1,0 +1,40 @@
+{% extends 'base.html'%}
+{% block head%}
+<script type="text/javascript"> 
+    $(document).ready(function() {
+        $('#enviar').click(function(e){
+            e.preventDefault();
+                var dataString = $('#form-control').serialize();
+                alert(dataString)
+
+            $.ajax({
+                type: "POST",
+                url: '',
+                data: dataString,
+                success: function(data) {
+                window.location.replace("");
+                }
+            });
+        });
+    });
+</script>
+{% endblock head%}
+{% block content%}
+
+<div>
+<form id='form-control' method="POST">
+    {%csrf_token%}
+    <table>
+    <tc>
+    <tr>
+            <td>Nuevo CIF: </td>
+            <td><input type="number" name="cif" step="0.1"></td>
+        </tr>
+        </tc>
+    </table>
+    <input type="submit" name="enviar" id="enviar" value="Guardar" class="btn btn-primary" style="margin-left: 41%">  
+    <a href="/manejoOrdenes/{{periodoId}}">Regresar</a>
+</form>
+</div>
+
+{% endblock content%}

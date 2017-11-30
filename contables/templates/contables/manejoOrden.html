@@ -1,0 +1,74 @@
+{% extends 'base.html'%}
+
+{% block head %}
+<script type="text/javascript"> 
+function cerrarOrden(){
+    $(document).ready(function() {
+        $('#enviar').click(function(e){
+            e.preventDefault();
+            var dataString = $('#form-control').serialize();
+            alert(dataString)
+            $.ajax({
+                type: "POST",
+                url: '',
+                data: dataString,
+                success: function(data) {
+                window.location.replace("");
+                }
+            });
+        });
+    });
+}
+</script>
+{% endblock head %}
+{% block content %}
+<div align="center">
+<a href="/crearOrden/{{periodoId}}">Crear Orden</a>
+<a href="/modificarCIF/{{periodoId}}">Modificar CIF</a>
+	<div align="right">
+		<div style="width: 100px">
+		</div>
+    </div>
+
+    <table>
+        <tr>
+            <td align="center">Orden</td>
+            <td align="center">Fecha de Creacion</td>
+            <td align="center">Fecha de Entrega</td>
+            <td align="center">Estado</td>
+            <td align="center"></td>
+            <td></td>
+        </tr>
+        <tr>
+            {% for ord in orden%}
+            <td align="center">{{ord.descripcion}}</td>
+            <td align="center">{{ord.fechaCreacion}}</td>
+            <td align="center">{{ord.fechaEntrega}}</td>
+            {% if ord.terminado == True %}
+            <td align="center">Terminado</td>
+            {% endif %}
+            {% if ord.terminado == False %}
+            <td align="center">En Proceso</td>
+            {% endif %}
+            {% if ord.terminado == False%}
+            <td><a href="/gestionarOrden/{{ord.id}}">Gestionar Orden</a></td>
+            {% endif %}
+            {% if ord.terminado == True%}
+            <td><a href="#">Gestionar Producto Terminado</a></td>
+            {% endif %}
+            {% if ord.terminado == True %}
+            {% endif %}
+            {% if ord.terminado == False %}
+            <td align="center">
+                 <form id="form-control1" method="POST">
+                      {%csrf_token%}
+                      <button type="submit"  onclick="cerrarOrden()" class="btn btn-outline-primary" name="enviar" id="enviar">Cerrar Orden</button>
+                      <input type="hidden" name="idorden" value="{{ord.id}}">
+                </form>
+            </td>
+            {% endif %}
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+{% endblock content %}

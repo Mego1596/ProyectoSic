@@ -79,4 +79,92 @@ class balanceGeneral(models.Model):
 	id=models.AutoField(primary_key=True)
 	debe =models.DecimalField('debe', max_digits=50, decimal_places=2, blank=False, null=True, validators=[MinValueValidator(0)])
 	haber= models.DecimalField('haber', max_digits=50, decimal_places=2, blank=False, null=True, validators=[MinValueValidator(0)])
+
+class Empleado(models.Model):
+	dui=models.AutoField(primary_key=True)
+	nombreEmpleado= models.CharField(max_length = 256)
+	apellidoEmpleado= models.CharField(max_length = 256)
+	puesto = models.CharField(max_length = 256, null=True)
+	fecha = models.DateField('Fecha de Contratacion', help_text='Formato: AAAA/MM/DD', blank=False, null=False)
+
+class planillaGeneral(models.Model):
+	id=models.AutoField(primary_key=True)
+	dui= models.ForeignKey(Empleado, null=True, blank=True, on_delete=models.CASCADE)
+	AFP_general=models.DecimalField('AFP', max_digits=50, decimal_places=2, blank=False, null=True, validators=[MinValueValidator(0)])
+	ISSS_general=models.DecimalField('ISSS', max_digits=50, decimal_places=2, blank=False, null=True, validators=[MinValueValidator(0)])
+	salarioTotal=models.DecimalField('SalarioTotal', max_digits=50, decimal_places=2, blank=False, null=True, validators=[MinValueValidator(0)])
+	vacaciones=models.DecimalField('Vacaciones', max_digits=50, decimal_places=2, blank=False, null=True, validators=[MinValueValidator(0)])
+
+class Pan(models.Model):
+	id=models.AutoField(primary_key=True)
+	descripcion = models.CharField(max_length = 256)
+
+class MateriaPrima(models.Model):
+	id=models.AutoField(primary_key=True)
+	nombreMateriaPrima= models.CharField(max_length = 256)
+	cantidad = models.IntegerField()
+	precioUnitario= models.DecimalField('haber', max_digits=50, decimal_places=2, blank=False, null=True, validators=[MinValueValidator(0)])
+
+class CIF(models.Model):
+	id=models.AutoField(primary_key=True)
+	porcentaje=models.DecimalField('haber', max_digits=50, decimal_places=2, blank=False, null=True, validators=[MinValueValidator(0)])
+
+class Kardex(models.Model):
+	id=models.AutoField(primary_key=True)
+	materiaPrima= models.ForeignKey(MateriaPrima, null=True, blank=True, on_delete=models.CASCADE)
+
+class Entrada(models.Model):
+	id=models.AutoField(primary_key=True)
+	kardex=models.ForeignKey(Kardex, null=True, blank=True, on_delete=models.CASCADE)
+	fechaEntrada= models.DateField('Fecha de Entrada', help_text='Formato: AAAA/MM/DD', blank=False, null=False)
+	cantidadEntrada= models.IntegerField()
+	costoTotalEntrada= models.DecimalField('haber', max_digits=50, decimal_places=2, blank=False, null=True, validators=[MinValueValidator(0)])
+	costoUnitarioEntrada= models.DecimalField('haber', max_digits=50, decimal_places=2, blank=False, null=True, validators=[MinValueValidator(0)])
+
+class Salida(models.Model):
+	id=models.AutoField(primary_key=True)
+	kardex=models.ForeignKey(Kardex, null=True, blank=True, on_delete=models.CASCADE)
+	fechaSalida= models.DateField('Fecha de Entrada', help_text='Formato: AAAA/MM/DD', blank=False, null=False)
+	cantidadSalida= models.IntegerField()
+	costoTotalSalida= models.DecimalField('haber', max_digits=50, decimal_places=2, blank=False, null=True, validators=[MinValueValidator(0)])
+	costoUnitarioSalida= models.DecimalField('haber', max_digits=50, decimal_places=2, blank=False, null=True, validators=[MinValueValidator(0)])
+
+class Final(models.Model):
+	id=models.AutoField(primary_key=True)
+	kardex=models.ForeignKey(Kardex, null=True, blank=True, on_delete=models.CASCADE)
+	fechaFinal= models.DateField('Fecha de Final', help_text='Formato: AAAA/MM/DD', blank=False, null=False)
+	cantidadFinal= models.IntegerField()
+	costoTotalFinal= models.DecimalField('Costo Final', max_digits=50, decimal_places=2, blank=False, null=True, validators=[MinValueValidator(0)])
+	costoUnitarioFinal= models.DecimalField('Costo Unitario FInal', max_digits=50, decimal_places=2, blank=False, null=True, validators=[MinValueValidator(0)])
+	es_Actual= models.NullBooleanField(null = True, default=False);
 	
+class Orden(models.Model):
+	id=models.AutoField(primary_key=True)
+	pan=models.ForeignKey(Pan, null=True, blank=True, on_delete=models.CASCADE)
+	cif=models.ForeignKey(CIF, null=True, blank=True, on_delete=models.CASCADE)
+	descripcion=models.CharField(max_length = 256)
+	CMOD=models.DecimalField('haber', max_digits=50, decimal_places=2, blank=False, null=True, validators=[MinValueValidator(0)])
+	cantEmpleados= models.IntegerField()
+	diasTrabajados=  models.IntegerField()
+	fechaCreacion= models.DateField('Fecha de Creacion', help_text='Formato: AAAA/MM/DD', blank=False, null=False)
+	fechaEntrega= models.DateField('Fecha de Entrega', help_text='Formato: AAAA/MM/DD', blank=False, null=False)
+	CIF_O=models.DecimalField('haber', max_digits=50, decimal_places=2, blank=False, null=True, validators=[MinValueValidator(0)])
+	CMP=models.DecimalField('haber', max_digits=50, decimal_places=2, blank=False, null=True, validators=[MinValueValidator(0)])
+	terminado= models.NullBooleanField(null = False);
+
+class materialUtilizado(models.Model):
+	id=models.AutoField(primary_key=True)
+	orden=models.ForeignKey(Orden, null=True, blank=True, on_delete=models.CASCADE)
+	materiaPrima= models.ForeignKey(MateriaPrima, null=True, blank=True, on_delete=models.CASCADE)
+
+class productoTerminado(models.Model):
+	id=models.AutoField(primary_key=True)
+	orden=models.ForeignKey(Orden, null=True, blank=True, on_delete=models.CASCADE)
+	cantidadProducto=models.IntegerField()
+	costoUnitarioProducto=models.DecimalField('Costo Unitario', max_digits=50, decimal_places=2, blank=False, null=True, validators=[MinValueValidator(0)])
+	costoTotalProducto=models.DecimalField('haber', max_digits=50, decimal_places=2, blank=False, null=True, validators=[MinValueValidator(0)])
+
+class empleadosXorden(models.Model):
+	id=models.AutoField(primary_key=True)
+	orden=models.ForeignKey(Orden, null=True, blank=True, on_delete=models.CASCADE)
+	dui= models.ForeignKey(Empleado, null=True, blank=True, on_delete=models.CASCADE)

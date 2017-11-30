@@ -7,6 +7,8 @@ from myauth.models import  MyUser
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
 from django.db.models import Max,Count
+from django.db import connection
+from .models import Empleado,planillaGeneral,Pan,MateriaPrima,CIF,Final,Kardex,Entrada,Salida,Orden,materialUtilizado,productoTerminado,empleadosXorden
 # Create your views here.
 @login_required
 def index(request):
@@ -192,6 +194,7 @@ def balancesComprobacion(request,periodoId):
 
 @login_required
 def estadosResultado(request,periodoId):
+	periodo=periodoId
 	cuentasResultadoDeudor = Cuenta.objects.filter(descripcion__iexact='Costo de Venta')
 	cuentasResultadoAcreedor = Cuenta.objects.filter(descripcion__iexact='Ingreso')
 	cuentasResultadoDeudorAdministracion = Cuenta.objects.filter(descripcion__iexact='Gastos de Administracion')
@@ -334,10 +337,11 @@ def estadosResultado(request,periodoId):
  	reservaLegal=Cuenta.objects.filter(descripcion__iexact='Reserva Legal')
  	impuesto=Cuenta.objects.filter(nombre__iexact='Impuesto sobre Renta')
 
-	return render(request, 'contables/estadoResultado.html', {'impuestoRenta':impuesto,'capital':reservaLegal,'Gasto':cuentasResultadoDeudor,'Gasto2':cuentasResultadoDeudorAdministracion,'Gasto3':cuentasResultadoDeudorFinanciero,'Gasto4':cuentasResultadoDeudorVenta,'resultado':estado,'Ingreso':cuentasResultadoAcreedor})
+	return render(request, 'contables/estadoResultado.html', {'impuestoRenta':impuesto,'capital':reservaLegal,'Gasto':cuentasResultadoDeudor,'Gasto2':cuentasResultadoDeudorAdministracion,'Gasto3':cuentasResultadoDeudorFinanciero,'Gasto4':cuentasResultadoDeudorVenta,'resultado':estado,'Ingreso':cuentasResultadoAcreedor,'periodoId':periodoId})
 
 @login_required
 def estadoCapita(request,periodoId):
+	periodo=periodoId
 	inversiones = Cuenta.objects.filter(descripcion__iexact='Inversion')
 	desinversiones = Cuenta.objects.filter(descripcion__iexact='Desinversion')
 	transaccion = Transaccion.objects.filter(id_periodoContable=periodoId)
@@ -419,10 +423,11 @@ def estadoCapita(request,periodoId):
 	detalles = detalleTransaccion.objects.all()
 	estadoCa = estadoCapital.objects.all()
 	estado = estadoResulta.objects.all()
-	return render(request,'contables/estadoCapital.html',{'neta':Neta,'utilidades':estado,'capitalContable':estadoCa,'inver':inversiones,'desinver':desinversiones})
+	return render(request,'contables/estadoCapital.html',{'neta':Neta,'periodoId':periodoId,'utilidades':estado,'capitalContable':estadoCa,'inver':inversiones,'desinver':desinversiones})
 
 @login_required
 def balanceGral(request,periodoId):
+	periodo=periodoId
 	activosCorrientes = Cuenta.objects.filter(codigo_dependiente__iexact=1)
 	pasivosCorrientes = Cuenta.objects.exclude(codigo=20104).filter(codigo_dependiente__iexact=2)
 	capitalContable = estadoCapital.objects.all()
@@ -523,7 +528,7 @@ def balanceGral(request,periodoId):
 	estadoGeneral = balanceGeneral.objects.all()
 	transaccion = Transaccion.objects.filter(id_periodoContable=periodoId)
 	detalles = detalleTransaccion.objects.all()
-	return render(request,'contables/balanceGeneral.html', {'estadoGral':estadoGeneral,'cap':capitalContable,'activos':activosCorrientes,'pasivos':pasivosCorrientes})
+	return render(request,'contables/balanceGeneral.html', {'estadoGral':estadoGeneral,'periodoId':periodoId,'cap':capitalContable,'activos':activosCorrientes,'pasivos':pasivosCorrientes})
 
 @login_required
 def historialCuenta(request,periodoId):
@@ -612,6 +617,121 @@ def modificarCuenta(request,cuentaId):
 
 def contabilidadGeneral(request,periodoId):
 	periodos= periodoId
-	return render(request, 'contables/contabilidadGeneral.html', {'periodoId':periodos})
+	return render(request,'contables/contabilidadGeneral.html', {'periodoId':periodos})
 
 
+def contabilidadCost(request,periodoId):
+	return render(request, 'contables/contabilidadCostos.html',{'periodoId':periodoId})
+
+def manejoOrden(request,periodoId):
+	if request.method == 'POST':
+		ordenParcial=Orden.objects.get(id=request.POST['idorden'])
+		ordenParcial.terminado=True
+		ordenParcial.save()
+	ordenes=Orden.objects.all()
+	return render (request, 'contables/manejoOrden.html',{'periodoId':periodoId,'orden':ordenes})
+
+def compraMateriaPrima(request,periodoId):
+	mp=MateriaPrima.objects.all()
+
+	if request.method == 'POST':
+		#final=Final.objects.filter(id=request.POST['productoId'], es_Actual=True)
+		#tamano=len(final)
+
+		#if tamano != 0:
+		#	final=Final.objects.get(es_Actual=True)
+		#	final.es_Actual=False
+		#	final.save()
+
+		materiaPrima=MateriaPrima.objects.filter(id=request.POST['productoId'])
+		Entrada.objects.create(
+			kardex=Kardex.objects.get(materiaPrima=request.POST['productoId']),
+			fechaEntrada= request.POST['fechaEntrada'],
+			costoUnitarioEntrada= request.POST['preciUnit'],
+			cantidadEntrada= request.POST['cantidadMP'],
+			costoTotalEntrada= float(request.POST['preciUnit'])*float(request.POST['cantidadMP'])
+			)
+		#if tamano == 0:
+		Final.objects.create(
+			kardex=Kardex.objects.get(materiaPrima=request.POST['productoId']),
+			fechaFinal= request.POST['fechaEntrada'],
+			costoUnitarioFinal= request.POST['preciUnit'],
+			cantidadFinal= request.POST['cantidadMP'],
+			costoTotalFinal= float(request.POST['preciUnit'])*float(request.POST['cantidadMP']),
+			es_Actual=True
+			)
+		#else:
+		#	Final.objects.create(
+		#		kardex=Kardex.objects.get(materiaPrima=request.POST['productoId']),
+		#		fechaFinal= request.POST['fechaEntrada'],
+		#		costoUnitarioFinal= request.POST['preciUnit'],
+		#		cantidadFinal= request.POST['cantidadMP'],
+		#		costoTotalFinal= float(request.POST['preciUnit'])*float(request.POST['cantidadMP']),
+		#		es_Actual=True
+		#		)
+	return render(request, 'contables/compraMP.html',{'periodoId':periodoId,'product':mp})
+
+def contratacionEmpleado(request,periodoId):
+	if request.method=='POST':
+		Empleado.objects.create(
+			dui=request.POST['dui'],
+			nombreEmpleado= request.POST['nombres'],
+			apellidoEmpleado=  request.POST['apellidos'],
+			puesto = request.POST['puesto'],
+			fecha =  request.POST['fecha']
+			)
+	return render(request, 'contables/contratacionEmpleados.html',{'periodoId':periodoId})
+
+def planilla(request,periodoId):
+	return render (request, 'contables/planillaGeneral.html',{'periodoId':periodoId})
+
+def manejoKardex(request,periodoId):
+	return render(request, 'contables/kardex.html',{'periodoId':periodoId})
+
+def crearOrd(request,periodoId):
+	x=Pan.objects.all()
+	cif=CIF.objects.all()
+	if request.method=='POST':
+		Orden.objects.create(
+			pan=Pan.objects.get(id=request.POST['productoId']),
+			cif=CIF.objects.get(porcentaje=request.POST['cif']),
+			descripcion=request.POST['descripcion'],
+			diasTrabajados=request.POST['diasTrabajados'],
+			cantEmpleados=0,
+			terminado=False,
+			fechaEntrega=request.POST['fechaEntrega'],
+			fechaCreacion=request.POST.get('fechaCreacio'),
+			CMOD=0.0,
+			CIF_O=0.0,
+			CMP=0.0
+			)
+
+	
+	return render(request, 'contables/crearOrden.html',{'periodoId':periodoId,'tipoPan':x,'cif':cif})
+
+def modificarCif(request, periodoId):
+	if request.method == 'POST':
+		cif = CIF.objects.get(id=1)
+		cif.porcentaje=request.POST['cif']
+		cif.save()
+	return render(request, 'contables/cif.html',{'periodoId':periodoId})
+
+def gestionOrden(request,ordenId):
+	orden= Orden.objects.filter(id=ordenId)
+	return render(request, 'contables/gestionarOrden.html',{'orden':orden,'ordenId':ordenId})
+
+def asignarMP(request,ordenId):
+	mp=MateriaPrima.objects.all()	
+	
+	if request.method == 'POST':
+		Salida.objects.create(
+			kardex=Kardex.objects.get(materiaPrima=request.POST['productoId']),
+			fechaSalida= request.POST['fechaEntrada'],
+			costoUnitarioSalida= request.POST['preciUnit'],
+			cantidadSalida= request.POST['cantidadMP'],
+			costoTotalSalida= float(request.POST['preciUnit'])*float(request.POST['cantidadMP'])
+			)
+	return render(request, 'contables/asignarMP.html',{'ordenId':ordenId,'product':mp})
+
+def asignarMOD(request,ordenId):
+	return render(request, 'contables/asignarMOD.html',{'ordenId':ordenId})
