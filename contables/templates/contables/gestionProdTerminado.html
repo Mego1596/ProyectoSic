@@ -24,17 +24,36 @@
 	<form id="form-control" method="POST">
 	{% csrf_token %}
 		<table>
-			{% if prod.cantidadProducto == 0.00 %}
+
 			<tr>
 				<td>Cantidad de Producto:</td>
 			</tr>
 			<tr>
 				<td><input type="number" name="cantProd"></td>
 			</tr>
+			<tr>
+				<td>Porcentaje de Ganancia:</td>
+			</tr>
+			<tr>
+				<td><input type="number" name="ganancia" step="0.1"></td>
+			</tr>
+			 <tr>
+            <td>Tipo de Venta: </td>
+            </tr>
+            <tr>
+            <td>
+                <select name="Venta">
+                    <option value="Credito"> Credito
+                    </option>
+                    <option value="Contado"> Contado
+                    </option>
+                </select>
+            </td>
+        </tr>
 		</table>
 	</form>
 	<input type="submit" name="enviar" id="enviar" value="Guardar" class="btn btn-primary" style="margin-left: 0%;margin-top: 0.5%">
-	{% endif %}
+
 	<table>
 		<tr>
 			<th>Producto Terminado para la Orden:      </th>
@@ -50,6 +69,7 @@
 			<td align="center">Costos de Mano de Obra</td>
 			<td align="center">Costo Total Producto</td>
 			<td align="center">Costo Unitario</td>
+			<td align="center">Precio Unitario de Venta</td>
 		</tr>
 		<tr>
 			<td align="center">{{ord.id}}</td>
@@ -59,6 +79,7 @@
 			<td align="center">{{ord.CMOD}}</td>
 			<td align="center">{{prod.costoTotalProducto}}</td>
 			<td align="center">{{prod.costoUnitarioProducto}}</td>
+			<td align="center">{{prod.precioVenta}}</td>
 		</tr>
 	</table>
 </div>

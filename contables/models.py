@@ -172,6 +172,8 @@ class productoTerminado(models.Model):
 	cantidadProducto=models.IntegerField()
 	costoUnitarioProducto=models.DecimalField('Costo Unitario', max_digits=50, decimal_places=2, blank=False, null=True, validators=[MinValueValidator(0)])
 	costoTotalProducto=models.DecimalField('haber', max_digits=50, decimal_places=2, blank=False, null=True, validators=[MinValueValidator(0)])
+	porcentajeGanancia=models.DecimalField('haber', max_digits=50, decimal_places=2, blank=False, null=True, validators=[MinValueValidator(0)])
+	precioVenta=models.DecimalField('haber', max_digits=50, decimal_places=2, blank=False, null=True, validators=[MinValueValidator(0)])
 
 class empleadosXorden(models.Model):
 	id=models.AutoField(primary_key=True)

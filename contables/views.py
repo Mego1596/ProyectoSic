@@ -636,7 +636,9 @@ def manejoOrden(request,periodoId):
 			orden=Orden.objects.get(id=request.POST['idorden']),
 			cantidadProducto=0.00,
 			costoUnitarioProducto=0.00,
-			costoTotalProducto=float(ordenParcial.CMOD)+float(ordenParcial.CIF_O)+float(ordenParcial.CMP)
+			costoTotalProducto=float(ordenParcial.CMOD)+float(ordenParcial.CIF_O)+float(ordenParcial.CMP),
+			porcentajeGanancia=0.00,
+			precioVenta=0.00
 			)
 	ordenes=Orden.objects.all()
 	return render (request, 'contables/manejoOrden.html',{'periodoId':periodoId,'orden':ordenes})
@@ -665,6 +667,60 @@ def compraMateriaPrima(request,periodoId):
 		print(costoUnitario)
 		print("costoTotal")
 		print(costoTotal)
+		if request.POST['Compra']=='Credito':
+			Transaccion.objects.create(
+				descripcion='CompraMP',
+				fecha=request.POST['fechaEntrada'],
+				id_periodoContable=PeriodoContable.objects.get(id_periodoContable=periodoId),
+				is_inicial=False,
+				)
+
+			transaccion= Transaccion.objects.get(fecha=request.POST['fechaEntrada'], descripcion__iexact="CompraMP")
+			detalleTransaccion.objects.create(
+				haber = (float(request.POST['preciUnit'])*float(request.POST['cantidadMP']))*1.13,
+				debe =float(0.00),
+				id_Transaccion =Transaccion.objects.get(id_Transaccion=transaccion.id_Transaccion),
+				id_cuenta= Cuenta.objects.get(codigo=20101),
+				)			
+			detalleTransaccion.objects.create(
+				debe = (float(request.POST['preciUnit'])*float(request.POST['cantidadMP'])),
+				haber =0.00,
+				id_Transaccion =Transaccion.objects.get(id_Transaccion=transaccion.id_Transaccion),
+				id_cuenta =Cuenta.objects.get(codigo=10141),
+				)	
+			detalleTransaccion.objects.create(
+				debe = (float(request.POST['preciUnit'])*float(request.POST['cantidadMP']))*0.13,
+				haber =0.00,
+				id_Transaccion =Transaccion.objects.get(id_Transaccion=transaccion.id_Transaccion),
+				id_cuenta =Cuenta.objects.get(codigo=10137),
+				)
+		else:
+			Transaccion.objects.create(
+				descripcion='CompraMP',
+				fecha=request.POST['fechaEntrada'],
+				id_periodoContable=PeriodoContable.objects.get(id_periodoContable=periodoId),
+				is_inicial=False,
+				)
+
+			transaccion= Transaccion.objects.get(fecha=request.POST['fechaEntrada'], descripcion__iexact="CompraMP")
+			detalleTransaccion.objects.create(
+				haber = (float(request.POST['preciUnit'])*float(request.POST['cantidadMP']))*1.13,
+				debe =float(0.00),
+				id_Transaccion =Transaccion.objects.get(id_Transaccion=transaccion.id_Transaccion),
+				id_cuenta= Cuenta.objects.get(codigo=10102),
+				)			
+			detalleTransaccion.objects.create(
+				debe = (float(request.POST['preciUnit'])*float(request.POST['cantidadMP'])),
+				haber =0.00,
+				id_Transaccion =Transaccion.objects.get(id_Transaccion=transaccion.id_Transaccion),
+				id_cuenta =Cuenta.objects.get(codigo=10141),
+				)	
+			detalleTransaccion.objects.create(
+				debe = (float(request.POST['preciUnit'])*float(request.POST['cantidadMP']))*0.13,
+				haber =0.00,
+				id_Transaccion =Transaccion.objects.get(id_Transaccion=transaccion.id_Transaccion),
+				id_cuenta =Cuenta.objects.get(codigo=10137),
+				)
 
 		Entrada.objects.create(
 			kardex=Kardex.objects.get(materiaPrima=request.POST['productoId']),
@@ -823,15 +879,72 @@ def asignarMOD(request,ordenId):
 
 	return render(request, 'contables/asignarMOD.html',{'ordenId':ordenId,'empleado':emp,'empx':empleados})
 
-def prodTerminado(request,ordenId):
-
+def prodTerminado(request,ordenId,periodoId):
 	producto = productoTerminado.objects.get(orden_id=ordenId)
 	orden= Orden.objects.get(id=ordenId)
 	if request.method == 'POST':
 		producto = productoTerminado.objects.get(orden_id=ordenId)
 		producto.cantidadProducto=request.POST['cantProd']
 		producto.costoUnitarioProducto=float(producto.costoTotalProducto)/int(request.POST['cantProd'])
+		producto.porcentajeGanancia=request.POST['ganancia']
 		producto.save()
+		producto.precioVenta=float(producto.costoUnitarioProducto)+(float(producto.costoUnitarioProducto)*float(producto.porcentajeGanancia))
+		producto.save()
+
+		if request.POST['Venta']=='Credito':
+			Transaccion.objects.create(
+				descripcion='Venta',
+				fecha=orden.fechaEntrega,
+				id_periodoContable=PeriodoContable.objects.get(id_periodoContable=periodoId),
+				is_inicial=False,
+				)
+
+			transaccion= Transaccion.objects.get(fecha=orden.fechaEntrega, descripcion__iexact="Venta")
+			detalleTransaccion.objects.create(
+				debe = float(producto.precioVenta)*float(producto.cantidadProducto)*1.13,
+				haber =float(0.00),
+				id_Transaccion =Transaccion.objects.get(id_Transaccion=transaccion.id_Transaccion),
+				id_cuenta= Cuenta.objects.get(codigo=10107),
+				)			
+			detalleTransaccion.objects.create(
+				haber = float(producto.precioVenta)*float(producto.cantidadProducto),
+				debe =0.00,
+				id_Transaccion =Transaccion.objects.get(id_Transaccion=transaccion.id_Transaccion),
+				id_cuenta =Cuenta.objects.get(codigo=50102),
+				)	
+			detalleTransaccion.objects.create(
+				haber = float(producto.precioVenta)*float(producto.cantidadProducto)*0.13,
+				debe =0.00,
+				id_Transaccion =Transaccion.objects.get(id_Transaccion=transaccion.id_Transaccion),
+				id_cuenta =Cuenta.objects.get(codigo=20105),
+				)
+		else:
+			Transaccion.objects.create(
+				descripcion='Venta',
+				fecha=orden.fechaEntrega,
+				id_periodoContable=PeriodoContable.objects.get(id_periodoContable=periodoId),
+				is_inicial=False,
+				)
+
+			transaccion= Transaccion.objects.get(fecha=orden.fechaEntrega, descripcion__iexact="Venta")
+			detalleTransaccion.objects.create(
+				debe = float(producto.precioVenta)*float(producto.cantidadProducto)*1.13,
+				haber =float(0.00),
+				id_Transaccion =Transaccion.objects.get(id_Transaccion=transaccion.id_Transaccion),
+				id_cuenta= Cuenta.objects.get(codigo=10102),
+				)			
+			detalleTransaccion.objects.create(
+				haber = float(producto.precioVenta)*float(producto.cantidadProducto),
+				debe =0.00,
+				id_Transaccion =Transaccion.objects.get(id_Transaccion=transaccion.id_Transaccion),
+				id_cuenta =Cuenta.objects.get(codigo=50102),
+				)	
+			detalleTransaccion.objects.create(
+				haber = float(producto.precioVenta)*float(producto.cantidadProducto)*0.13,
+				debe =0.00,
+				id_Transaccion =Transaccion.objects.get(id_Transaccion=transaccion.id_Transaccion),
+				id_cuenta =Cuenta.objects.get(codigo=20105),
+				)
 
 	producto = productoTerminado.objects.get(orden_id=ordenId)
 	pan= Pan.objects.get(id=orden.pan_id)
