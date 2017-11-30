@@ -54,7 +54,7 @@ function cerrarOrden(){
             <td><a href="/gestionarOrden/{{ord.id}}">Gestionar Orden</a></td>
             {% endif %}
             {% if ord.terminado == True%}
-            <td><a href="#">Gestionar Producto Terminado</a></td>
+            <td><a href="/productoTerminado/{{ord.id}}">Gestionar Producto Terminado</a></td>
             {% endif %}
             {% if ord.terminado == True %}
             {% endif %}

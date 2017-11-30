@@ -86,6 +86,8 @@ class Empleado(models.Model):
 	apellidoEmpleado= models.CharField(max_length = 256)
 	puesto = models.CharField(max_length = 256, null=True)
 	fecha = models.DateField('Fecha de Contratacion', help_text='Formato: AAAA/MM/DD', blank=False, null=False)
+	def __str__(self):
+		return '{} {} {} {}'.format(self.dui, self.nombreEmpleado,self.apellidoEmpleado,self.puesto)
 
 class planillaGeneral(models.Model):
 	id=models.AutoField(primary_key=True)
@@ -98,6 +100,9 @@ class planillaGeneral(models.Model):
 class Pan(models.Model):
 	id=models.AutoField(primary_key=True)
 	descripcion = models.CharField(max_length = 256)
+	def __str__(self):
+		return '{}'.format(self.descripcion)
+
 
 class MateriaPrima(models.Model):
 	id=models.AutoField(primary_key=True)
@@ -137,7 +142,7 @@ class Final(models.Model):
 	costoTotalFinal= models.DecimalField('Costo Final', max_digits=50, decimal_places=2, blank=False, null=True, validators=[MinValueValidator(0)])
 	costoUnitarioFinal= models.DecimalField('Costo Unitario FInal', max_digits=50, decimal_places=2, blank=False, null=True, validators=[MinValueValidator(0)])
 	es_Actual= models.NullBooleanField(null = True, default=False);
-	
+
 class Orden(models.Model):
 	id=models.AutoField(primary_key=True)
 	pan=models.ForeignKey(Pan, null=True, blank=True, on_delete=models.CASCADE)
@@ -152,6 +157,7 @@ class Orden(models.Model):
 	CMP=models.DecimalField('haber', max_digits=50, decimal_places=2, blank=False, null=True, validators=[MinValueValidator(0)])
 	terminado= models.NullBooleanField(null = False);
 
+	
 class materialUtilizado(models.Model):
 	id=models.AutoField(primary_key=True)
 	orden=models.ForeignKey(Orden, null=True, blank=True, on_delete=models.CASCADE)
@@ -168,3 +174,5 @@ class empleadosXorden(models.Model):
 	id=models.AutoField(primary_key=True)
 	orden=models.ForeignKey(Orden, null=True, blank=True, on_delete=models.CASCADE)
 	dui= models.ForeignKey(Empleado, null=True, blank=True, on_delete=models.CASCADE)
+	def __str__(self):
+		return '{}'.format(self.dui)

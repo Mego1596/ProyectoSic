@@ -625,9 +625,18 @@ def contabilidadCost(request,periodoId):
 
 def manejoOrden(request,periodoId):
 	if request.method == 'POST':
+		cif=CIF.objects.get(id=1)
 		ordenParcial=Orden.objects.get(id=request.POST['idorden'])
 		ordenParcial.terminado=True
+		ordenParcial.CMOD= float(ordenParcial.diasTrabajados)*float(ordenParcial.cantEmpleados)*10
+		ordenParcial.CIF_O=float(cif.porcentaje)*float(ordenParcial.CMOD)
 		ordenParcial.save()
+		productoTerminado.objects.create(
+			orden=Orden.objects.get(id=request.POST['idorden']),
+			cantidadProducto=0.00,
+			costoUnitarioProducto=0.00,
+			costoTotalProducto=float(ordenParcial.CMOD)+float(ordenParcial.CIF_O)+float(ordenParcial.CMP)
+			)
 	ordenes=Orden.objects.all()
 	return render (request, 'contables/manejoOrden.html',{'periodoId':periodoId,'orden':ordenes})
 
@@ -752,21 +761,13 @@ def asignarMP(request,ordenId):
 			cantidadAux=int(0)
 			costoUnitario=float(0.00)
 			costoTotal=float(0.00)
-			print("tamano:")
-			print(tamano)
 			if tamano != 0:
 				final=Final.objects.get(kardex_id=request.POST['productoId'],es_Actual=True)
 				cantidadAux=int(final.cantidadFinal)
 				costoUnitario=float(final.costoUnitarioFinal)
 				costoTotal=float(cantidadAux)*float(costoUnitario)
 				final.es_Actual=False
-				final.save()
-			print("cantidad")
-			print(cantidadAux)
-			print("precioUnitario")
-			print(costoUnitario)
-			print("costoTotal")
-			print(costoTotal)	
+				final.save()	
 			Salida.objects.create(
 				kardex=Kardex.objects.get(materiaPrima=request.POST['productoId']),
 				fechaSalida= request.POST['fechaSalida'],
@@ -784,8 +785,43 @@ def asignarMP(request,ordenId):
 				costoTotalFinal= (int(cantidadAux)-int(request.POST['cantidadMP']))*float(costoUnitario),
 				es_Actual=True
 				)
-	
+			materialUtilizado.objects.create(
+				orden=Orden.objects.get(id=ordenId),
+				materiaPrima=MateriaPrima.objects.get(id=request.POST['productoId'])
+				)
+
+			orde=Orden.objects.get(id=ordenId)
+			orde.CMP=float(orde.CMP)+float(costoUnitario)
+			orde.save()
+
 	return render(request, 'contables/asignarMP.html',{'ordenId':ordenId,'product':mp})
 
 def asignarMOD(request,ordenId):
-	return render(request, 'contables/asignarMOD.html',{'ordenId':ordenId})
+	emp=Empleado.objects.all()
+	empleados= empleadosXorden.objects.filter(orden_id=ordenId)
+	if request.method=='POST':
+		orde=Orden.objects.get(id=ordenId)
+		orde.cantEmpleados=int(orde.cantEmpleados)+int(1)
+		orde.save()
+
+		empleadosXorden.objects.create(
+			orden= Orden.objects.get(id=request.POST['idOrden']),
+			dui= Empleado.objects.get(dui=request.POST['empleadoId'])
+			)
+	empleados= empleadosXorden.objects.filter(orden_id=ordenId)
+
+	return render(request, 'contables/asignarMOD.html',{'ordenId':ordenId,'empleado':emp,'empx':empleados})
+
+def prodTerminado(request,ordenId):
+
+	producto = productoTerminado.objects.get(orden_id=ordenId)
+	orden= Orden.objects.get(id=ordenId)
+	if request.method == 'POST':
+		producto = productoTerminado.objects.get(orden_id=ordenId)
+		producto.cantidadProducto=request.POST['cantProd']
+		producto.costoUnitarioProducto=float(producto.costoTotalProducto)/int(request.POST['cantProd'])
+		producto.save()
+
+	producto = productoTerminado.objects.get(orden_id=ordenId)
+	pan= Pan.objects.get(id=orden.pan_id)
+	return render(request, 'contables/gestionProdTerminado.html',{'prod':producto,'ord':orden,'pan':pan})

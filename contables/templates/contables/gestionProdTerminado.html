@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% block head%}
+<script type="text/javascript"> 
+    $(document).ready(function() {
+        $('#enviar').click(function(e){
+            e.preventDefault();
+                var dataString = $('#form-control').serialize();
+
+            $.ajax({
+                type: "POST",
+                url: '',
+                data: dataString,
+                success: function(data) {
+                window.location.replace("");
+                }
+            });
+        });
+    });
+</script>
+{% endblock head%}
+{% block content %}
+
+<div align="center">
+	<form id="form-control" method="POST">
+	{% csrf_token %}
+		<table>
+			{% if prod.cantidadProducto == 0.00 %}
+			<tr>
+				<td>Cantidad de Producto:</td>
+			</tr>
+			<tr>
+				<td><input type="number" name="cantProd"></td>
+			</tr>
+		</table>
+	</form>
+	<input type="submit" name="enviar" id="enviar" value="Guardar" class="btn btn-primary" style="margin-left: 0%;margin-top: 0.5%">
+	{% endif %}
+	<table>
+		<tr>
+			<th>Producto Terminado para la Orden:      </th>
+			<th>  {{ord.descripcion}}</th>
+		</tr>
+	</table>
+	<table>
+		<tr>
+			<td align="center">No Orden</td>
+			<td align="center">Tipo de Pan</td>
+			<td align="center">Costos de Materia Prima</td>
+			<td align="center">Costos de Costos Indirectos de Fabricacion</td>
+			<td align="center">Costos de Mano de Obra</td>
+			<td align="center">Costo Total Producto</td>
+			<td align="center">Costo Unitario</td>
+		</tr>
+		<tr>
+			<td align="center">{{ord.id}}</td>
+			<td align="center">{{pan.descripcion}}</td>
+			<td align="center">{{ord.CMP}}</td>
+			<td align="center">{{ord.CIF_O}}</td>
+			<td align="center">{{ord.CMOD}}</td>
+			<td align="center">{{prod.costoTotalProducto}}</td>
+			<td align="center">{{prod.costoUnitarioProducto}}</td>
+		</tr>
+	</table>
+</div>
+{% endblock content %}

@@ -6,7 +6,6 @@
             e.preventDefault();
                 var dataString = $('#form-control').serialize();
 
-
             $.ajax({
                 type: "POST",
                 url: '',
@@ -23,15 +22,55 @@
 <form id="form-control" method="POST">
 {% csrf_token %}
 <table>
-		<tr>
-			<td>Cantidad:</td>
-			<td>
-			<input type="number" name="cantidad">
-			</td>
-		</tr>
-	</tc>
+    <tc>
+        <tr>
+            <td>Orden:</td>
+            <td>
+            <input type="number" name="idOrden" readonly="readonly" value="{{ordenId}}">
+            </td>
+        </tr>
+    </tc>
+    <tc>
+         <tr>
+            <td>Empleado: </td>
+            <td>
+                <select style="width:100%" name="empleadoId"> 
+                    {% for producto1 in empleado %}
+                    <option value="{{producto1.dui}}">{{producto1.nombreEmpleado}}</option>
+                    {% endfor %}
+                </select>
+            </td>
+         </tr>
+    </tc>
 </table>
 <input type="submit" name="enviar" id="enviar" value="Guardar" class="btn btn-primary" style="margin-left: 41%">
 <a href="/gestionarOrden/{{ordenId}}">Regresar</a>
 </form>
+<div align="center">
+<table>
+    <tr>
+        <th>Empleados asignados a la Orden:</th>
+    </tr>
+</table>
+<table>
+        <tr>
+            <td align="center">DUI</td>
+            <td align="center">Nombre</td>
+            <td align="center">Apellidos</td>
+            <td align="center">Puesto</td>
+        </tr>
+        <tr>
+            {% for emp in empleado%}
+            {% for mp in empx %}
+            {% if emp.dui == mp.dui_id %}
+            <td align="center">{{emp.dui}}</td>
+            <td align="center">{{emp.nombreEmpleado}}</td>
+            <td align="center">{{emp.apellidoEmpleado}}</td>
+            <td align="center">{{emp.puesto}}</td>
+        </tr>
+            {% endif %}
+            {% endfor %}
+            {% endfor %}
+    </table>
+</div>
 {% endblock content %}
