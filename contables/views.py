@@ -9,6 +9,7 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import Max,Count
 from django.db import connection
 from .models import Empleado,planillaGeneral,Pan,MateriaPrima,CIF,Final,Kardex,Entrada,Salida,Orden,materialUtilizado,productoTerminado,empleadosXorden
+import datetime
 # Create your views here.
 @login_required
 def index(request):
@@ -698,13 +699,23 @@ def contratacionEmpleado(request,periodoId):
 			dui=request.POST['dui'],
 			nombreEmpleado= request.POST['nombres'],
 			apellidoEmpleado=  request.POST['apellidos'],
-			puesto = request.POST['puesto'],
-			fecha =  request.POST['fecha']
+			puesto = request.POST['Puesto'],
+			)
+		empAux=Empleado.objects.get(dui=request.POST['dui'])
+
+		planillaGeneral.objects.create(
+			dui=Empleado.objects.get(dui=empAux.dui),
+			AFP_general=float(0.00),
+			ISSS_general=float(0.00),
+			salarioTotal=float(0.00),
+			vacaciones=float(0.00),
+			salarioNominal=float(0.00)
 			)
 	return render(request, 'contables/contratacionEmpleados.html',{'periodoId':periodoId})
 
 def planilla(request,periodoId):
-	return render (request, 'contables/planillaGeneral.html',{'periodoId':periodoId})
+	empleado=Empleado.objects.all()
+	return render (request, 'contables/planillaGeneral.html',{'periodoId':periodoId,'emp':empleado})
 
 def manejoKardex(request,periodoId):
 	mp = MateriaPrima.objects.all()
@@ -797,7 +808,7 @@ def asignarMP(request,ordenId):
 	return render(request, 'contables/asignarMP.html',{'ordenId':ordenId,'product':mp})
 
 def asignarMOD(request,ordenId):
-	emp=Empleado.objects.all()
+	emp=Empleado.objects.filter(puesto="Panadero")
 	empleados= empleadosXorden.objects.filter(orden_id=ordenId)
 	if request.method=='POST':
 		orde=Orden.objects.get(id=ordenId)
@@ -825,3 +836,72 @@ def prodTerminado(request,ordenId):
 	producto = productoTerminado.objects.get(orden_id=ordenId)
 	pan= Pan.objects.get(id=orden.pan_id)
 	return render(request, 'contables/gestionProdTerminado.html',{'prod':producto,'ord':orden,'pan':pan})
+
+def asignarPlanilla(request,empleadoId):
+	porcentaje_afp=float(0.0675)
+	porcentaje_insaforp=float(0.01)
+	porcentaje_isss=float(0.075)
+	planilla=planillaGeneral.objects.get(dui_id=empleadoId)
+	empleado=Empleado.objects.get(dui=empleadoId)
+	cantidad=int(0)
+	fechaEmpleado=empleado.fecha
+	fechaActual=datetime.datetime.now()
+
+	anio=(int(fechaActual.year)-int(fechaEmpleado.year))
+	if anio > 0:
+		if fechaEmpleado.month > fechaActual.month:
+			anio=int(anio)-int(1)
+		if fechaEmpleado.month == fechaActual.month:
+			if fechaEmpleado.day > fechaActual.day:
+				anio=int(anio)-int(1)
+
+	
+	if empleado.puesto == "Panadero":
+		planilla.salarioNominal=float(300.00)
+		planilla.save()
+		saliDia=planilla.salarioNominal/30
+		if anio ==0:
+			planilla.aguinaldo=float(0.00)
+		if anio >= 1  and anio <=3:
+			planilla.aguinaldo=(float(saliDia*15))/12
+			planilla.save()
+		if anio > 3 and anio <=10:
+			planilla.aguinaldo=(float(saliDia*19))/12
+			planilla.save()
+		if anio >=10:
+			planilla.aguinaldo=(float(saliDia*21))/12
+			planilla.save()
+		planilla.AFP_general=float(planilla.salarioNominal)*porcentaje_afp
+		planilla.ISSS_general=float(planilla.salarioNominal)*porcentaje_isss
+		planilla.insaforp=float(planilla.salarioNominal)*porcentaje_insaforp
+		planilla.save()
+		planilla.vacaciones=float((float(saliDia*15)+float(saliDia*15*porcentaje_afp)+float(saliDia*15*porcentaje_isss)+ float(saliDia*15*porcentaje_insaforp)+float(saliDia*15*0.3))/12)
+		planilla.save()
+		planilla.salarioTotal=float(float(planilla.salarioNominal)+float(planilla.AFP_general)+float(planilla.ISSS_general)+float(planilla.insaforp)+float(planilla.vacaciones)+float(planilla.aguinaldo))
+		planilla.save()
+	if empleado.puesto == "Gerente":
+		planilla.salarioNominal=float(400.00)
+		planilla.save()
+		saliDia=planilla.salarioNominal/30
+		if anio ==0:
+			planilla.aguinaldo=float(0.00)
+		if anio >= 1  and anio <=3:
+			planilla.aguinaldo=(float(saliDia*15))/12
+			planilla.save()
+		if anio > 3 and anio <=10:
+			planilla.aguinaldo=(float(saliDia*19))/12
+			planilla.save()
+		if anio >=10:
+			planilla.aguinaldo=(float(saliDia*21))/12
+			planilla.save()
+		planilla.AFP_general=float(planilla.salarioNominal)*porcentaje_afp
+		planilla.ISSS_general=float(planilla.salarioNominal)*porcentaje_isss
+		planilla.insaforp=float(planilla.salarioNominal)*porcentaje_insaforp
+		planilla.save()
+		planilla.vacaciones=((float(planilla.salarioNominal)/2+float(planilla.AFP_general)/2+float(planilla.ISSS_general)/2+float(planilla.insaforp)/2)/12)+(float(planilla.salarioNominal)*1.3*0.5/12)/12
+		planilla.save()
+		planilla.salarioTotal=float(float(planilla.salarioNominal)+float(planilla.AFP_general)+float(planilla.ISSS_general)+float(planilla.insaforp)+float(planilla.vacaciones)+float(planilla.aguinaldo))
+		planilla.save()
+	planilla=planillaGeneral.objects.get(dui_id=empleadoId)
+
+	return render (request,'contables/asignarPlanilla.html',{'planillaGeneral':planilla,'emp':empleado})

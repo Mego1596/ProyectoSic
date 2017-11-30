@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div align="center">
+	<table>
+		<tr>
+			<th>Planilla Mensual del Empleado:  {{emp.nombreEmpleado}} {{emp.apellidoEmpleado}} </th>
+		</tr>	
+
+	</table>
+	<table>
+	<tc>	
+			<tr>
+				<td>
+					AFP
+				</td>
+				<td>
+				<input type="number" name="afp" step="0.1" readonly="readonly" value="{{planillaGeneral.AFP_general}}">
+				</td>
+			</tr>
+	</tc>
+	<tc>	
+			<tr>
+				<td>
+					ISSS
+				</td>
+				<td>
+				<input type="number" name="afp" step="0.1" readonly="readonly" value="{{planillaGeneral.ISSS_general}}">
+				</td>
+			</tr>
+	</tc>
+	<tc>	
+			<tr>
+				<td>
+					Vacaciones
+				</td>
+				<td>
+					<input type="number" name="afp" step="0.1" readonly="readonly" value="{{planillaGeneral.vacaciones}}">
+				</td>
+			</tr>
+	</tc>
+	<tc>	
+			<tr>
+				<td>
+					INSAFORP
+				</td>
+				<td>
+					<input type="number" name="afp" step="0.1" readonly="readonly" value="{{planillaGeneral.insaforp}}">
+				</td>
+			</tr>
+	</tc>
+	<tc>	
+			<tr>
+				<td>
+					Aguinaldo
+				</td>
+				<td>
+					<input type="number" name="afp" step="0.1" readonly="readonly" value="{{planillaGeneral.aguinaldo}}">
+				</td>
+			</tr>
+	</tc>
+	<tc>	
+			<tr>
+				<td>
+					Salario Base:
+				</td>
+				<td>
+					<input type="number" name="afp" step="0.1" readonly="readonly" value="{{planillaGeneral.salarioNominal}}">
+				</td>
+			</tr>
+	</tc>
+
+	<tc>	
+			<tr>
+				<td>
+					Salario Total:
+				</td>
+				<td>
+					<input type="number" name="afp" step="0.1" readonly="readonly" value="{{planillaGeneral.salarioTotal}}">
+				</td>
+			</tr>
+	</tc>
+	</table>
+
+</div>
+{% endblock content %}
