@@ -24,7 +24,7 @@
 	<form id="form-control" method="POST">
 	{% csrf_token %}
 		<table>
-
+		{% if prod.cantidadProducto == 0.00 and prod.porcentajeGanancia == 0.00 %}
 			<tr>
 				<td>Cantidad de Producto:</td>
 			</tr>
@@ -53,7 +53,7 @@
 		</table>
 	</form>
 	<input type="submit" name="enviar" id="enviar" value="Guardar" class="btn btn-primary" style="margin-left: 0%;margin-top: 0.5%">
-
+{% endif %}
 	<table>
 		<tr>
 			<th>Producto Terminado para la Orden:      </th>
