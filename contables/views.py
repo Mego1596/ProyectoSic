@@ -633,17 +633,29 @@ def manejoOrden(request,periodoId):
 
 def compraMateriaPrima(request,periodoId):
 	mp=MateriaPrima.objects.all()
-
+	
 	if request.method == 'POST':
-		#final=Final.objects.filter(id=request.POST['productoId'], es_Actual=True)
-		#tamano=len(final)
+		final=Final.objects.filter(kardex_id=request.POST.get('productoId'),es_Actual=True)
+		tamano=len(final)
+		cantidadAux=int(0)
+		costoUnitario=float(0.00)
+		costoTotal=float(0.00)
+		print("tamano:")
+		print(tamano)
+		if tamano != 0:
+			final=Final.objects.get(kardex_id=request.POST['productoId'],es_Actual=True)
+			cantidadAux=int(final.cantidadFinal)
+			costoUnitario=float(final.costoUnitarioFinal)
+			costoTotal=float(cantidadAux)*float(costoUnitario)
+			final.es_Actual=False
+			final.save()
+		print("cantidad")
+		print(cantidadAux)
+		print("precioUnitario")
+		print(costoUnitario)
+		print("costoTotal")
+		print(costoTotal)
 
-		#if tamano != 0:
-		#	final=Final.objects.get(es_Actual=True)
-		#	final.es_Actual=False
-		#	final.save()
-
-		materiaPrima=MateriaPrima.objects.filter(id=request.POST['productoId'])
 		Entrada.objects.create(
 			kardex=Kardex.objects.get(materiaPrima=request.POST['productoId']),
 			fechaEntrada= request.POST['fechaEntrada'],
@@ -651,24 +663,24 @@ def compraMateriaPrima(request,periodoId):
 			cantidadEntrada= request.POST['cantidadMP'],
 			costoTotalEntrada= float(request.POST['preciUnit'])*float(request.POST['cantidadMP'])
 			)
-		#if tamano == 0:
-		Final.objects.create(
-			kardex=Kardex.objects.get(materiaPrima=request.POST['productoId']),
-			fechaFinal= request.POST['fechaEntrada'],
-			costoUnitarioFinal= request.POST['preciUnit'],
-			cantidadFinal= request.POST['cantidadMP'],
-			costoTotalFinal= float(request.POST['preciUnit'])*float(request.POST['cantidadMP']),
-			es_Actual=True
-			)
-		#else:
-		#	Final.objects.create(
-		#		kardex=Kardex.objects.get(materiaPrima=request.POST['productoId']),
-		#		fechaFinal= request.POST['fechaEntrada'],
-		#		costoUnitarioFinal= request.POST['preciUnit'],
-		#		cantidadFinal= request.POST['cantidadMP'],
-		#		costoTotalFinal= float(request.POST['preciUnit'])*float(request.POST['cantidadMP']),
-		#		es_Actual=True
-		#		)
+		if tamano == 0:
+			Final.objects.create(
+				kardex=Kardex.objects.get(materiaPrima=request.POST['productoId']),
+				fechaFinal= request.POST['fechaEntrada'],
+				costoUnitarioFinal= request.POST['preciUnit'],
+				cantidadFinal= request.POST['cantidadMP'],
+				costoTotalFinal= float(request.POST['preciUnit'])*float(request.POST['cantidadMP']),
+				es_Actual=True
+				)
+		else:
+			Final.objects.create(
+				kardex=Kardex.objects.get(materiaPrima=request.POST['productoId']),
+				fechaFinal= request.POST['fechaEntrada'],
+				costoUnitarioFinal= (float(request.POST['preciUnit'])*float(request.POST['cantidadMP'])+float(cantidadAux)*float(costoUnitario))/(int(request.POST['cantidadMP'])+int(cantidadAux)),
+				cantidadFinal= int(request.POST['cantidadMP'])+int(cantidadAux),
+				costoTotalFinal= (float(request.POST['preciUnit'])*float(request.POST['cantidadMP'])+float(cantidadAux)*float(costoUnitario)),
+				es_Actual=True
+				)
 	return render(request, 'contables/compraMP.html',{'periodoId':periodoId,'product':mp})
 
 def contratacionEmpleado(request,periodoId):
@@ -721,16 +733,49 @@ def gestionOrden(request,ordenId):
 	return render(request, 'contables/gestionarOrden.html',{'orden':orden,'ordenId':ordenId})
 
 def asignarMP(request,ordenId):
-	mp=MateriaPrima.objects.all()	
+
+	mp=MateriaPrima.objects.all()
 	
 	if request.method == 'POST':
-		Salida.objects.create(
-			kardex=Kardex.objects.get(materiaPrima=request.POST['productoId']),
-			fechaSalida= request.POST['fechaEntrada'],
-			costoUnitarioSalida= request.POST['preciUnit'],
-			cantidadSalida= request.POST['cantidadMP'],
-			costoTotalSalida= float(request.POST['preciUnit'])*float(request.POST['cantidadMP'])
+		final=Final.objects.filter(kardex_id=request.POST.get('productoId'),es_Actual=True)
+		tamano=len(final)
+		cantidadAux=int(0)
+		costoUnitario=float(0.00)
+		costoTotal=float(0.00)
+		print("tamano:")
+		print(tamano)
+		if tamano != 0:
+			final=Final.objects.get(kardex_id=request.POST['productoId'],es_Actual=True)
+			cantidadAux=int(final.cantidadFinal)
+			costoUnitario=float(final.costoUnitarioFinal)
+			costoTotal=float(cantidadAux)*float(costoUnitario)
+			final.es_Actual=False
+			final.save()
+		print("cantidad")
+		print(cantidadAux)
+		print("precioUnitario")
+		print(costoUnitario)
+		print("costoTotal")
+		print(costoTotal)
+
+
+		if tamano != 0:
+			Salida.objects.create(
+				kardex=Kardex.objects.get(materiaPrima=request.POST['productoId']),
+				fechaSalida= request.POST['fechaSalida'],
+				costoUnitarioSalida= (float(costoUnitario)),
+				cantidadSalida= request.POST['cantidadMP'],
+				costoTotalSalida= (float(costoUnitario))*float(request.POST['cantidadMP'])
 			)
+			Final.objects.create(
+				kardex=Kardex.objects.get(materiaPrima=request.POST['productoId']),
+				fechaFinal= request.POST['fechaSalida'],
+				costoUnitarioFinal= (float(costoUnitario)),
+				cantidadFinal=int(cantidadAux)-int(request.POST['cantidadMP']),
+				costoTotalFinal= (int(cantidadAux)-int(request.POST['cantidadMP']))*float(costoUnitario),
+				es_Actual=True
+				)
+	
 	return render(request, 'contables/asignarMP.html',{'ordenId':ordenId,'product':mp})
 
 def asignarMOD(request,ordenId):
