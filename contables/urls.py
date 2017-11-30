@@ -34,4 +34,5 @@ urlpatterns = [
     url(r'^gestionarOrden/(?P<ordenId>\d+)/$', views.gestionOrden),
     url(r'^asignarMP/(?P<ordenId>\d+)/$', views.asignarMP),
     url(r'^asignarMOD/(?P<ordenId>\d+)/$', views.asignarMOD),
+    url(r'^detallesKardex/(?P<materiaId>\d+)/$', views.detalleKardex),
 ]

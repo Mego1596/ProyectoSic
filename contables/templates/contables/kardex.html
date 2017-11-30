@@ -1,0 +1,17 @@
+{% extends 'base.html'%}
+{% block content %}
+<div align="center">
+	<table>
+		<tr>
+			<td align="center">Materia Prima</td>
+			<td align="center">Kardex</td>
+		</tr>
+		<tr>
+			{% for mp in materia %}
+			<td align="center">{{mp.nombreMateriaPrima}}</td>
+			<td align="center"><a href="/detallesKardex/{{mp.id}}">Ver Detalles</a></td>
+		</tr>
+			{% endfor %}
+	</table>
+</div>
+{% endblock content%}

@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div align="center">
+	<table>
+		<tr>
+			<th align="center">{{materia.nombreMateriaPrima}}</th>
+		</tr>
+	</table>
+	<table>
+		<tr>
+			<td>
+				<table>
+					<tr>
+						<td align="center">Cantidad</td>
+						<td align="center">Precio Unitario</td>
+						<td align="center">Monto</td>
+						<td align="center">Cantidad</td>
+						<td align="center">Precio Unitario</td>
+						<td align="center">Monto</td>
+						<td align="center">Cantidad</td>
+						<td align="center">Precio Unitario</td>
+						<td align="center">Monto</td>
+					</tr>
+					<tr>
+						{% for fn in final %}
+							{% for entry in entrada %}
+								{% if entry.fechaEntrada == fn.fechaFinal %}	
+									<td align="center">{{entry.cantidadEntrada}}</td>
+									<td align="center">{{entry.costoUnitarioEntrada}}</td>
+									<td align="center">{{entry.costoTotalEntrada}}</td>
+									<td align="center"></td>
+									<td align="center"></td>
+									<td align="center"></td>
+									<td align="center">{{fn.cantidadFinal}}</td>
+									<td align="center">{{fn.costoUnitarioFinal}}</td>
+									<td align="center">{{fn.costoTotalFinal}}</td>
+								{% endif %}
+							{% endfor %}
+					</tr>
+					{% endfor %}
+					<tr>
+						{% for fn in final %}
+							{% for entry in salida %}
+								{% if entry.fechaSalida == fn.fechaFinal %}	
+									<td align="center"></td>
+									<td align="center"></td>
+									<td align="center"></td>
+									<td align="center">{{entry.cantidadSalida}}</td>
+									<td align="center">{{entry.costoUnitarioSalida}}</td>
+									<td align="center">{{entry.costoTotalSalida}}</td>
+									<td align="center">{{fn.cantidadFinal}}</td>
+									<td align="center">{{fn.costoUnitarioFinal}}</td>
+									<td align="center">{{fn.costoTotalFinal}}</td>
+								{% endif %}
+							{% endfor %}
+					</tr>
+					{% endfor %}
+				</table>
+			</td>
+		</tr>
+	</table>
+</div>
+{% endblock content %}
