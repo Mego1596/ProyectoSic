@@ -990,7 +990,8 @@ def prodTerminado(request,ordenId,periodoId):
 
 	producto = productoTerminado.objects.get(orden_id=ordenId)
 	pan= Pan.objects.get(id=orden.pan_id)
-	return render(request, 'contables/gestionProdTerminado.html',{'prod':producto,'ord':orden,'pan':pan})
+	print(periodoId)
+	return render(request, 'contables/gestionProdTerminado.html',{'periodoId':periodoId,'prod':producto,'ord':orden,'pan':pan})
 
 @login_required
 def asignarPlanilla(request,empleadoId,periodoId):
