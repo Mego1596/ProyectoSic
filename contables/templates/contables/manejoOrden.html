@@ -114,18 +114,20 @@ function cerrarOrden(){
               <th>Fecha de creacion</th>
               <th>Fecha de entrega</th>
               <th>Estado</th>
+              <th>Gestionar</th>
+              <th>Cerrar</th>
             </thead>
             <tbody>
               <tr>
                   {% for ord in orden%}
-                  <td align="center">{{ord.descripcion}}</td>
-                  <td align="center">{{ord.fechaCreacion}}</td>
-                  <td align="center">{{ord.fechaEntrega}}</td>
+                  <td>{{ord.descripcion}}</td>
+                  <td>{{ord.fechaCreacion}}</td>
+                  <td>{{ord.fechaEntrega}}</td>
                   {% if ord.terminado == True %}
-                  <td align="center">Terminado</td>
+                  <td>Terminado</td>
                   {% endif %}
                   {% if ord.terminado == False %}
-                  <td align="center">En Proceso</td>
+                  <td>En Proceso</td>
                   {% endif %}
                   {% if ord.terminado == False%}
                   <td><a href="/gestionarOrden/{{ord.id}}">Gestionar Orden</a></td>
@@ -136,7 +138,7 @@ function cerrarOrden(){
                   {% if ord.terminado == True %}
                   {% endif %}
                   {% if ord.terminado == False %}
-                  <td align="center">
+                  <td>
                        <form id="form-control1" method="POST">
                             {%csrf_token%}
                             <button type="submit"  onclick="cerrarOrden()" class="btn btn-outline-primary" name="enviar" id="enviar">Cerrar Orden</button>
