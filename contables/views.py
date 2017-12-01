@@ -661,21 +661,24 @@ def compraMateriaPrima(request,periodoId):
 			costoTotal=float(cantidadAux)*float(costoUnitario)
 			final.es_Actual=False
 			final.save()
-		print("cantidad")
-		print(cantidadAux)
-		print("precioUnitario")
-		print(costoUnitario)
-		print("costoTotal")
-		print(costoTotal)
+
+		entry=Entrada.objects.create(
+			kardex=Kardex.objects.get(materiaPrima=request.POST['productoId']),
+			fechaEntrada= request.POST['fechaEntrada'],
+			costoUnitarioEntrada= request.POST['preciUnit'],
+			cantidadEntrada= request.POST['cantidadMP'],
+			costoTotalEntrada= float(request.POST['preciUnit'])*float(request.POST['cantidadMP'])
+			)
+
 		if request.POST['Compra']=='Credito':
 			Transaccion.objects.create(
-				descripcion='CompraMP',
+				descripcion='CompraMP'+str(entry.id),
 				fecha=request.POST['fechaEntrada'],
 				id_periodoContable=PeriodoContable.objects.get(id_periodoContable=periodoId),
 				is_inicial=False,
 				)
 
-			transaccion= Transaccion.objects.get(fecha=request.POST['fechaEntrada'], descripcion__iexact="CompraMP")
+			transaccion= Transaccion.objects.get(fecha=request.POST['fechaEntrada'], descripcion__iexact="CompraMP"+str(entry.id))
 			detalleTransaccion.objects.create(
 				haber = (float(request.POST['preciUnit'])*float(request.POST['cantidadMP']))*1.13,
 				debe =float(0.00),
@@ -696,13 +699,13 @@ def compraMateriaPrima(request,periodoId):
 				)
 		else:
 			Transaccion.objects.create(
-				descripcion='CompraMP',
+				descripcion='CompraMP'+str(entry.id),
 				fecha=request.POST['fechaEntrada'],
 				id_periodoContable=PeriodoContable.objects.get(id_periodoContable=periodoId),
 				is_inicial=False,
 				)
 
-			transaccion= Transaccion.objects.get(fecha=request.POST['fechaEntrada'], descripcion__iexact="CompraMP")
+			transaccion= Transaccion.objects.get(fecha=request.POST['fechaEntrada'], descripcion__iexact="CompraMP"+str(entry.id))
 			detalleTransaccion.objects.create(
 				haber = (float(request.POST['preciUnit'])*float(request.POST['cantidadMP']))*1.13,
 				debe =float(0.00),
@@ -722,13 +725,7 @@ def compraMateriaPrima(request,periodoId):
 				id_cuenta =Cuenta.objects.get(codigo=10137),
 				)
 
-		Entrada.objects.create(
-			kardex=Kardex.objects.get(materiaPrima=request.POST['productoId']),
-			fechaEntrada= request.POST['fechaEntrada'],
-			costoUnitarioEntrada= request.POST['preciUnit'],
-			cantidadEntrada= request.POST['cantidadMP'],
-			costoTotalEntrada= float(request.POST['preciUnit'])*float(request.POST['cantidadMP'])
-			)
+		
 		if tamano == 0:
 			Final.objects.create(
 				kardex=Kardex.objects.get(materiaPrima=request.POST['productoId']),
@@ -893,57 +890,90 @@ def prodTerminado(request,ordenId,periodoId):
 
 		if request.POST['Venta']=='Credito':
 			Transaccion.objects.create(
-				descripcion='Venta',
+				descripcion='Venta'+str(orden.id),
 				fecha=orden.fechaEntrega,
 				id_periodoContable=PeriodoContable.objects.get(id_periodoContable=periodoId),
 				is_inicial=False,
 				)
-
-			transaccion= Transaccion.objects.get(fecha=orden.fechaEntrega, descripcion__iexact="Venta")
+			#Afecta cuenta por cobrar
+			transaccion= Transaccion.objects.get(fecha=orden.fechaEntrega, descripcion__iexact="Venta"+str(orden.id))
 			detalleTransaccion.objects.create(
 				debe = float(producto.precioVenta)*float(producto.cantidadProducto)*1.13,
 				haber =float(0.00),
 				id_Transaccion =Transaccion.objects.get(id_Transaccion=transaccion.id_Transaccion),
 				id_cuenta= Cuenta.objects.get(codigo=10107),
-				)			
+				)	
+			#Afecta cuenta venta de panaderia (Resultado)		
 			detalleTransaccion.objects.create(
 				haber = float(producto.precioVenta)*float(producto.cantidadProducto),
 				debe =0.00,
 				id_Transaccion =Transaccion.objects.get(id_Transaccion=transaccion.id_Transaccion),
 				id_cuenta =Cuenta.objects.get(codigo=50102),
 				)	
+			#Afecta cuenta Iva por Pagar
 			detalleTransaccion.objects.create(
 				haber = float(producto.precioVenta)*float(producto.cantidadProducto)*0.13,
 				debe =0.00,
 				id_Transaccion =Transaccion.objects.get(id_Transaccion=transaccion.id_Transaccion),
 				id_cuenta =Cuenta.objects.get(codigo=20105),
 				)
+			#Afecta compras
+			detalleTransaccion.objects.create(
+				haber = float(producto.costoUnitarioProducto)*float(producto.cantidadProducto),
+				debe =0.00,
+				id_Transaccion =Transaccion.objects.get(id_Transaccion=transaccion.id_Transaccion),
+				id_cuenta =Cuenta.objects.get(codigo=10141),
+				)
+			#Afecta Costo de lo Vendido
+			detalleTransaccion.objects.create(
+				debe = float(producto.costoUnitarioProducto)*float(producto.cantidadProducto),
+				haber =0.00,
+				id_Transaccion =Transaccion.objects.get(id_Transaccion=transaccion.id_Transaccion),
+				id_cuenta =Cuenta.objects.get(codigo=40147),
+				)
 		else:
 			Transaccion.objects.create(
-				descripcion='Venta',
+				descripcion='Venta'+str(orden.id),
 				fecha=orden.fechaEntrega,
 				id_periodoContable=PeriodoContable.objects.get(id_periodoContable=periodoId),
 				is_inicial=False,
 				)
-
-			transaccion= Transaccion.objects.get(fecha=orden.fechaEntrega, descripcion__iexact="Venta")
+			#Afecta Caja Chica
+			transaccion= Transaccion.objects.get(fecha=orden.fechaEntrega, descripcion__iexact="Venta"+str(orden.id))
 			detalleTransaccion.objects.create(
 				debe = float(producto.precioVenta)*float(producto.cantidadProducto)*1.13,
 				haber =float(0.00),
 				id_Transaccion =Transaccion.objects.get(id_Transaccion=transaccion.id_Transaccion),
 				id_cuenta= Cuenta.objects.get(codigo=10102),
-				)			
+				)
+			#Afecta venta de Panaderia		
 			detalleTransaccion.objects.create(
 				haber = float(producto.precioVenta)*float(producto.cantidadProducto),
 				debe =0.00,
 				id_Transaccion =Transaccion.objects.get(id_Transaccion=transaccion.id_Transaccion),
 				id_cuenta =Cuenta.objects.get(codigo=50102),
 				)	
+			#Afecta IVA por Pagar
 			detalleTransaccion.objects.create(
 				haber = float(producto.precioVenta)*float(producto.cantidadProducto)*0.13,
 				debe =0.00,
 				id_Transaccion =Transaccion.objects.get(id_Transaccion=transaccion.id_Transaccion),
 				id_cuenta =Cuenta.objects.get(codigo=20105),
+				)
+
+			#Afecta compras
+			detalleTransaccion.objects.create(
+				haber = float(producto.costoUnitarioProducto)*float(producto.cantidadProducto),
+				debe =0.00,
+				id_Transaccion =Transaccion.objects.get(id_Transaccion=transaccion.id_Transaccion),
+				id_cuenta =Cuenta.objects.get(codigo=10141),
+				)
+			#Afecta Costo de lo Vendido
+			detalleTransaccion.objects.create(
+				debe = float(producto.costoUnitarioProducto)*float(producto.cantidadProducto),
+				haber =0.00,
+				id_Transaccion =Transaccion.objects.get(id_Transaccion=transaccion.id_Transaccion),
+				id_cuenta =Cuenta.objects.get(codigo=40147),
 				)
 
 	producto = productoTerminado.objects.get(orden_id=ordenId)
