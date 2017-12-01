@@ -130,7 +130,7 @@ function cerrarOrden(){
                   <td>En Proceso</td>
                   {% endif %}
                   {% if ord.terminado == False%}
-                  <td><a href="/gestionarOrden/{{ord.id}}">Gestionar Orden</a></td>
+                  <td><a href="/gestionarOrden/{{ord.id}}/{{periodoId}}">Gestionar Orden</a></td>
                   {% endif %}
                   {% if ord.terminado == True%}
                   <td><a href="/productoTerminado/{{ord.id}}/{{periodoId}}">Gestionar Producto Terminado</a></td>

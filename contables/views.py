@@ -615,15 +615,16 @@ def modificarCuenta(request,cuentaId):
 
 	return render (request, 'contables/modificarCuenta.html',{'cuenta':cuentas,'max':maximo})
 
-
+@login_required
 def contabilidadGeneral(request,periodoId):
 	periodos= periodoId
 	return render(request,'contables/contabilidadGeneral.html', {'periodoId':periodos})
 
-
+@login_required
 def contabilidadCost(request,periodoId):
 	return render(request, 'contables/contabilidadCostos.html',{'periodoId':periodoId})
 
+@login_required
 def manejoOrden(request,periodoId):
 	if request.method == 'POST':
 		cif=CIF.objects.get(id=1)
@@ -643,6 +644,7 @@ def manejoOrden(request,periodoId):
 	ordenes=Orden.objects.all()
 	return render (request, 'contables/manejoOrden.html',{'periodoId':periodoId,'orden':ordenes})
 
+@login_required
 def compraMateriaPrima(request,periodoId):
 	mp=MateriaPrima.objects.all()
 	
@@ -746,6 +748,7 @@ def compraMateriaPrima(request,periodoId):
 				)
 	return render(request, 'contables/compraMP.html',{'periodoId':periodoId,'product':mp})
 
+@login_required
 def contratacionEmpleado(request,periodoId):
 	if request.method=='POST':
 		Empleado.objects.create(
@@ -766,21 +769,25 @@ def contratacionEmpleado(request,periodoId):
 			)
 	return render(request, 'contables/contratacionEmpleados.html',{'periodoId':periodoId})
 
+@login_required
 def planilla(request,periodoId):
 	empleado=Empleado.objects.all()
 	return render (request, 'contables/planillaGeneral.html',{'periodoId':periodoId,'emp':empleado})
 
+@login_required
 def manejoKardex(request,periodoId):
 	mp = MateriaPrima.objects.all()
 	return render(request, 'contables/kardex.html',{'periodoId':periodoId,'materia':mp})
 
-def detalleKardex(request,materiaId):
+@login_required
+def detalleKardex(request,materiaId,periodoId):
 	fin=Final.objects.filter(kardex_id=materiaId)
 	entry=Entrada.objects.filter(kardex_id=materiaId)
 	out=Salida.objects.filter(kardex_id=materiaId)
 	mp=MateriaPrima.objects.get(id=materiaId)
-	return render(request, 'contables/detalleKardex.html',{'materia':mp,'final':fin,'entrada':entry,'salida':out})
+	return render(request, 'contables/detalleKardex.html',{'periodoId':periodoId,'materia':mp,'final':fin,'entrada':entry,'salida':out})
 
+@login_required
 def crearOrd(request,periodoId):
 	x=Pan.objects.all()
 	cif=CIF.objects.all()
@@ -802,6 +809,7 @@ def crearOrd(request,periodoId):
 	
 	return render(request, 'contables/crearOrden.html',{'periodoId':periodoId,'tipoPan':x,'cif':cif})
 
+@login_required
 def modificarCif(request, periodoId):
 	if request.method == 'POST':
 		cif = CIF.objects.get(id=1)
@@ -809,11 +817,13 @@ def modificarCif(request, periodoId):
 		cif.save()
 	return render(request, 'contables/cif.html',{'periodoId':periodoId})
 
-def gestionOrden(request,ordenId):
+@login_required
+def gestionOrden(request,ordenId,periodoId):
 	orden= Orden.objects.filter(id=ordenId)
-	return render(request, 'contables/gestionarOrden.html',{'orden':orden,'ordenId':ordenId})
+	return render(request, 'contables/gestionarOrden.html',{'orden':orden,'ordenId':ordenId,'periodoId':periodoId})
 
-def asignarMP(request,ordenId):
+@login_required
+def asignarMP(request,ordenId,periodoId):
 
 	mp=MateriaPrima.objects.all()
 	
@@ -858,9 +868,10 @@ def asignarMP(request,ordenId):
 			orde.CMP=float(orde.CMP)+float(costoUnitario)
 			orde.save()
 
-	return render(request, 'contables/asignarMP.html',{'ordenId':ordenId,'product':mp})
+	return render(request, 'contables/asignarMP.html',{'ordenId':ordenId,'product':mp,'periodoId':periodoId})
 
-def asignarMOD(request,ordenId):
+@login_required
+def asignarMOD(request,ordenId,periodoId):
 	emp=Empleado.objects.filter(puesto="Panadero")
 	empleados= empleadosXorden.objects.filter(orden_id=ordenId)
 	if request.method=='POST':
@@ -874,8 +885,9 @@ def asignarMOD(request,ordenId):
 			)
 	empleados= empleadosXorden.objects.filter(orden_id=ordenId)
 
-	return render(request, 'contables/asignarMOD.html',{'ordenId':ordenId,'empleado':emp,'empx':empleados})
+	return render(request, 'contables/asignarMOD.html',{'ordenId':ordenId,'empleado':emp,'empx':empleados,'periodoId':periodoId})
 
+@login_required
 def prodTerminado(request,ordenId,periodoId):
 	producto = productoTerminado.objects.get(orden_id=ordenId)
 	orden= Orden.objects.get(id=ordenId)
@@ -980,7 +992,8 @@ def prodTerminado(request,ordenId,periodoId):
 	pan= Pan.objects.get(id=orden.pan_id)
 	return render(request, 'contables/gestionProdTerminado.html',{'prod':producto,'ord':orden,'pan':pan})
 
-def asignarPlanilla(request,empleadoId):
+@login_required
+def asignarPlanilla(request,empleadoId,periodoId):
 	porcentaje_afp=float(0.0675)
 	porcentaje_insaforp=float(0.01)
 	porcentaje_isss=float(0.075)
@@ -1047,4 +1060,4 @@ def asignarPlanilla(request,empleadoId):
 		planilla.save()
 	planilla=planillaGeneral.objects.get(dui_id=empleadoId)
 
-	return render (request,'contables/asignarPlanilla.html',{'planillaGeneral':planilla,'emp':empleado})
+	return render (request,'contables/asignarPlanilla.html',{'planillaGeneral':planilla,'emp':empleado,'periodoId':periodoId})
