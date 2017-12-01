@@ -138,6 +138,29 @@
               <a href="/gestionarOrden/{{ordenId}}" class="btn btn-secondary">Regresar</a>
             </div>
           </form>
+          <h4>Empleados asignados a la orden:</h4>
+          <table class="table" id="dataTable" width="100%" cellspacing="0">
+            <thead>
+              <th>DUI</th>
+              <th>Nombres</th>
+              <th>Apellidos</th>
+              <th>Puesto</th>
+            </thead>
+            <tbody>
+              <tr>
+                  {% for emp in empleado%}
+                  {% for mp in empx %}
+                  {% if emp.dui == mp.dui_id %}
+                  <td>{{emp.dui}}</td>
+                  <td>{{emp.nombreEmpleado}}</td>
+                  <td>{{emp.apellidoEmpleado}}</td>
+                  <td>{{emp.puesto}}</td>
+              </tr>
+                  {% endif %}
+                  {% endfor %}
+                  {% endfor %}
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
