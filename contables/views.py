@@ -10,6 +10,7 @@ from django.db.models import Max,Count
 from django.db import connection
 from .models import Empleado,planillaGeneral,Pan,MateriaPrima,CIF,Final,Kardex,Entrada,Salida,Orden,materialUtilizado,productoTerminado,empleadosXorden
 import datetime
+import decimal
 # Create your views here.
 @login_required
 def index(request):
@@ -392,6 +393,7 @@ def estadoCapita(request,periodoId):
 		estadoCapi.haber=float(estadoCapi.haber)
 		estadoCapi.capitalContable=float(estadoCapi.capitalContable)+float(estadoCapi.haber)
 		estadoCapi.save()
+		Neta=float(0.00)
 
 
 	for cuenta in desinversiones:
@@ -693,8 +695,11 @@ def compraMateriaPrima(request,periodoId):
 				id_Transaccion =Transaccion.objects.get(id_Transaccion=transaccion.id_Transaccion),
 				id_cuenta =Cuenta.objects.get(codigo=10141),
 				)	
+			decimal.getcontext().rounding = decimal.ROUND_DOWN
+			aux=decimal.Decimal( (float(request.POST['preciUnit'])*float(request.POST['cantidadMP']))*0.13)
+			auxTruncado=round(aux,2)
 			detalleTransaccion.objects.create(
-				debe = (float(request.POST['preciUnit'])*float(request.POST['cantidadMP']))*0.13,
+				debe = auxTruncado, 
 				haber =0.00,
 				id_Transaccion =Transaccion.objects.get(id_Transaccion=transaccion.id_Transaccion),
 				id_cuenta =Cuenta.objects.get(codigo=10137),
@@ -720,8 +725,11 @@ def compraMateriaPrima(request,periodoId):
 				id_Transaccion =Transaccion.objects.get(id_Transaccion=transaccion.id_Transaccion),
 				id_cuenta =Cuenta.objects.get(codigo=10141),
 				)	
+			decimal.getcontext().rounding = decimal.ROUND_DOWN
+			aux=decimal.Decimal( (float(request.POST['preciUnit'])*float(request.POST['cantidadMP']))*0.13)
+			auxTruncado=round(aux,2)
 			detalleTransaccion.objects.create(
-				debe = (float(request.POST['preciUnit'])*float(request.POST['cantidadMP']))*0.13,
+				debe = auxTruncado,
 				haber =0.00,
 				id_Transaccion =Transaccion.objects.get(id_Transaccion=transaccion.id_Transaccion),
 				id_cuenta =Cuenta.objects.get(codigo=10137),
@@ -923,8 +931,11 @@ def prodTerminado(request,ordenId,periodoId):
 				id_cuenta =Cuenta.objects.get(codigo=50102),
 				)	
 			#Afecta cuenta Iva por Pagar
+			decimal.getcontext().rounding = decimal.ROUND_DOWN
+			aux=decimal.Decimal(float(producto.precioVenta)*float(producto.cantidadProducto)*0.13)
+			auxTruncado=round(aux,2)
 			detalleTransaccion.objects.create(
-				haber = float(producto.precioVenta)*float(producto.cantidadProducto)*0.13,
+				haber = float(auxTruncado),
 				debe =0.00,
 				id_Transaccion =Transaccion.objects.get(id_Transaccion=transaccion.id_Transaccion),
 				id_cuenta =Cuenta.objects.get(codigo=20105),
@@ -966,8 +977,11 @@ def prodTerminado(request,ordenId,periodoId):
 				id_cuenta =Cuenta.objects.get(codigo=50102),
 				)	
 			#Afecta IVA por Pagar
+			decimal.getcontext().rounding = decimal.ROUND_DOWN
+			aux=decimal.Decimal(float(producto.precioVenta)*float(producto.cantidadProducto)*0.13)
+			auxTruncado=round(aux,2)
 			detalleTransaccion.objects.create(
-				haber = float(producto.precioVenta)*float(producto.cantidadProducto)*0.13,
+				haber = float(auxTruncado),
 				debe =0.00,
 				id_Transaccion =Transaccion.objects.get(id_Transaccion=transaccion.id_Transaccion),
 				id_cuenta =Cuenta.objects.get(codigo=20105),
