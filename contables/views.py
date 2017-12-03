@@ -873,7 +873,7 @@ def asignarMP(request,ordenId,periodoId):
 				)
 
 			orde=Orden.objects.get(id=ordenId)
-			orde.CMP=float(orde.CMP)+float(costoUnitario)
+			orde.CMP=float(orde.CMP)+((float(costoUnitario))*float(request.POST['cantidadMP']))
 			orde.save()
 
 	return render(request, 'contables/asignarMP.html',{'ordenId':ordenId,'product':mp,'periodoId':periodoId})
