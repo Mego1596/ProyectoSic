@@ -632,7 +632,7 @@ def manejoOrden(request,periodoId):
 		cif=CIF.objects.get(id=1)
 		ordenParcial=Orden.objects.get(id=request.POST['idorden'])
 		ordenParcial.terminado=True
-		ordenParcial.CMOD= float(ordenParcial.diasTrabajados)*float(ordenParcial.cantEmpleados)*10
+		ordenParcial.CMOD= float(ordenParcial.diasTrabajados)*float(ordenParcial.cantEmpleados)*12.13
 		ordenParcial.CIF_O=float(cif.porcentaje)*float(ordenParcial.CMOD)
 		ordenParcial.save()
 		productoTerminado.objects.create(
